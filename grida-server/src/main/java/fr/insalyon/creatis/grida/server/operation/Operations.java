@@ -34,13 +34,28 @@ import fr.insalyon.creatis.grida.common.bean.GridData;
 import java.util.List;
 
 public interface Operations {
+
+    /**
+     * @return the modification date as a timestamp in milliseconds
+     */
     long getModificationDate(String proxy, String path)
         throws OperationException;
 
+    /**
+     * @return if path is a folder, the list of GridData about the files/folder
+     * of this folder. If path is a file, it returns a list with a single
+     * GridData about this file. If path does not exist, returns an empty list
+     */
     List<GridData> listFilesAndFolders(
         String proxy, String path, boolean listComment /* only in lcg */)
         throws OperationException;
 
+    /**
+     * Creates all the missing directories of localDirPath if necessary
+     * Overrides the local file if one already exists
+     * @return the local path of the downloaded file
+     * @throws OperationException if the file does not exist or is a directory
+     */
     String downloadFile(
         String operationID,
         String proxy,
@@ -50,6 +65,12 @@ public interface Operations {
 
     /** Upload the file to the first SE where it works. If it doesn't work on a
      *  SE, try the next one in the list that is configured.
+     * Creates all the missing directories of remoteDir if necessary
+     * Deletes the local file after the upload
+     * @return the remote path of the uploaded file
+     * @throws OperationException if a file or a folder with the same name
+     * already exists on remoteDir, or if the local file does not exist or is a
+     * directory
      */
     String uploadFile(
         String operationID,
@@ -57,25 +78,50 @@ public interface Operations {
         String localFilePath,
         String remoteDir) throws OperationException;
 
+
     void replicateFile(String proxy, String sourcePath)
         throws OperationException;
 
+    /**
+     * @throws OperationException if the path does not exist
+     */
     boolean isDir(String proxy, String path) throws OperationException;
 
+    /**
+     * Deletes folder and subfolders
+     * @throws OperationException if the path does not exist or is a file
+     */
     void deleteFolder(String proxy, String path) throws OperationException;
 
+    /**
+     * @throws OperationException if the path does not exist or is a folder
+     */
     void deleteFile(String proxy, String path) throws OperationException;
 
+    /**
+     * creates all missing folders
+     * do nothing if the folder already exists
+     * @throws OperationException if path is a file
+     */
     void createFolder(String proxy, String path) throws OperationException;
 
+    /**
+     * @throws OperationException if a file or a folder already exists on
+     * newPath, or if the oldPath does not exist or is a directory
+     */
     void rename(String proxy, String oldPath, String newPath)
         throws OperationException;
 
     boolean exists(String proxy, String path) throws OperationException;
 
-    /** Gets the size of a file or a directory. */
+    /**
+     * Gets the size of a file or a directory recursively.
+     * @return OperationException if path does not exist
+     */
     long getDataSize(String proxy, String path) throws OperationException;
 
+    /* this is specific */
+    @Deprecated
     void setComment(String proxy, String lfn, String comment)
         throws OperationException;
 }
