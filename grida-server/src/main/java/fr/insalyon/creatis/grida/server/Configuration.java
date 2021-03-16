@@ -36,6 +36,7 @@ package fr.insalyon.creatis.grida.server;
 
 import fr.insalyon.creatis.grida.server.operation.DiracOperations;
 import fr.insalyon.creatis.grida.server.operation.LCGOperations;
+import fr.insalyon.creatis.grida.server.operation.LocalOperations;
 import fr.insalyon.creatis.grida.server.operation.Operations;
 import java.io.File;
 import java.io.IOException;
@@ -125,6 +126,12 @@ public class Configuration {
             } else {
                 logger.warn("Dirac commands unavailable.");
             }
+        }
+        break;
+        case "local": {
+            logger.info("Using local operations");
+            operations = new LocalOperations();
+            isOneCommandConfigured = true;
         }
         break;
         default:
