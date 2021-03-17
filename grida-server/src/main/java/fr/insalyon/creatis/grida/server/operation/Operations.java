@@ -106,6 +106,7 @@ public interface Operations {
     void createFolder(String proxy, String path) throws OperationException;
 
     /**
+     * Creates all missing directories in newPath if necessary
      * @throws OperationException if a file or a folder already exists on
      * newPath, or if the oldPath does not exist or is a directory
      */

@@ -79,10 +79,8 @@ public class Server {
                 new Executor(communication).start();
             }
 
-        } catch (DAOException ex) {
-            logger.error(ex);
-        } catch (IOException ex) {
-            logger.error(ex);
+        } catch (DAOException | IOException ex) {
+            logger.error("Cannot start grida server", ex);
         }
     }
 }

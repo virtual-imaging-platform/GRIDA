@@ -9,13 +9,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class LocalOperations implements Operations {
@@ -63,8 +62,10 @@ public class LocalOperations implements Operations {
 
     private GridData getGridData(Path path) throws OperationException {
         BasicFileAttributes fileAttributes = null;
+        Set<PosixFilePermission> posixFilePermissions = null;
         try {
             fileAttributes = Files.readAttributes(path, BasicFileAttributes.class);
+            posixFilePermissions = Files.getPosixFilePermissions(path);
         } catch (IOException e) {
             logger.error("Cannot get file attributes of : " + path, e);
             throw new OperationException(e);
@@ -76,8 +77,9 @@ public class LocalOperations implements Operations {
         long size = fileAttributes.size();
         String modificationDate =  diracTimeFormatter.format(fileAttributes.lastModifiedTime().toInstant());
         String comment = "";
+        String permissions = PosixFilePermissions.toString(posixFilePermissions);
         String replicas = "-";
-        return new GridData(name, type, size, modificationDate, replicas, comment);
+        return new GridData(name, type, size, modificationDate, replicas, permissions, comment);
     }
 
     @Override
@@ -128,7 +130,7 @@ public class LocalOperations implements Operations {
 
     @Override
     public void replicateFile(String proxy, String sourcePath) throws OperationException {
-        throw new OperationException("Replication not supported on grida local mode");
+        logger.info("Replicate " + sourcePath + " in local mode : do nothing");
     }
 
     @Override
@@ -186,9 +188,18 @@ public class LocalOperations implements Operations {
 
     @Override
     public void rename(String proxy, String oldPath, String newPath) throws OperationException {
-        // at the moment, this should not be supported on dirac, so do not
-        // support it in local mode
-        throw new OperationException("Renaming not supported on grida local mode");
+        if ( ! exists(proxy, oldPath) || Files.isDirectory(Paths.get(oldPath))) {
+            throw new OperationException("Cannot rename " + oldPath + " because it does not exist or is a directory");
+        }
+        if ( exists(proxy, newPath)) {
+            throw new OperationException("Cannot rename to " + newPath + " because it already exists");
+        }
+        try {
+            Files.createDirectories(Paths.get(newPath).getParent());
+            Files.move(Paths.get(oldPath), Paths.get(newPath));
+        } catch (IOException e) {
+            throw new OperationException("Cannot rename " + oldPath + " to " + newPath, e);
+        }
     }
 
     @Override
