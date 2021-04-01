@@ -93,11 +93,17 @@ public class LocalOperations implements Operations {
         }
         try {
             Files.createDirectories(Paths.get(localDirPath));
-            return Files.copy(
+
+            Path newFile = Files.copy(
                     Paths.get(remoteFilePath),
                     Paths.get(localDirPath,fileName),
-                    StandardCopyOption.REPLACE_EXISTING)
-                    .toString();
+                    StandardCopyOption.REPLACE_EXISTING);
+            Set<PosixFilePermission> perms = Files.getPosixFilePermissions(newFile);
+            perms.addAll(Arrays.asList(
+                    PosixFilePermission.GROUP_READ,
+                    PosixFilePermission.OTHERS_READ));
+            Files.setPosixFilePermissions(newFile, perms);
+            return newFile.toString();
         } catch (IOException e) {
             logger.error("Cannot copy file to " + localDirPath, e);
             throw new OperationException(e);
@@ -120,12 +126,19 @@ public class LocalOperations implements Operations {
         try {
             Files.createDirectories(Paths.get(remoteDir));
             Files.copy(Paths.get(localFilePath), dest);
-            Files.delete(Paths.get(localFilePath));
-            return dest.toString();
         } catch (IOException e) {
             logger.error("Cannot copy file to " + dest, e);
             throw new OperationException(e);
         }
+        try {
+            Files.delete(Paths.get(localFilePath));
+        } catch (AccessDeniedException e) {
+            logger.warn("cannot delete uploaded file " + localFilePath + " : access denied");
+        } catch (IOException e) {
+            logger.error("Cannot copy file to " + dest, e);
+            throw new OperationException(e);
+        }
+        return dest.toString();
     }
 
     @Override
