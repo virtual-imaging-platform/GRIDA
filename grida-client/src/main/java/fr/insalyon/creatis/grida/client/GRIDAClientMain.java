@@ -121,7 +121,7 @@ public class GRIDAClientMain {
             "\n" +
             "<command> is one of the following (case insensitive):\n" +
             " getFile <remoteFile> <localDir>\n" +
-            " getFolder <remoteDir> <localDir>\n" +
+            " getFolder <remoteDir> <localDir> <zipResult>\n" +
             " list <dir> <1 if refresh, or else 0>\n" +
             " getModDate <filename>\n" +
             " upload <localFile> <remoteDir>\n" +
@@ -176,7 +176,7 @@ public class GRIDAClientMain {
             result = client.getRemoteFile(firstArg, options.cmdOptions[1]);
             break;
         case "getfolder":
-            result = client.getRemoteFolder(firstArg, options.cmdOptions[1]);
+            result = client.getRemoteFolder(firstArg, options.cmdOptions[1], options.cmdOptions[2]);
             break;
         case "list":
         {
@@ -359,7 +359,7 @@ public class GRIDAClientMain {
 
         int[] nbNeededArguments = {
             2, // "getfile",
-            2, // "getfolder",
+            3, // "getfolder",
             2, // "list",
             1, // "getmoddate",
             2, // "upload",

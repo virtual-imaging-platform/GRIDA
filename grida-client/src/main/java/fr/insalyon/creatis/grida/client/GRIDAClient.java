@@ -97,7 +97,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
      * @return Local path of the downloaded folder
      * @throws GRIDAClientException
      */
-    public String getRemoteFolder(String remoteDir, String localDir) throws GRIDAClientException {
+    public String getRemoteFolder(String remoteDir, String localDir, String zipResult) throws GRIDAClientException {
 
         try {
             Communication communication = getCommunication();
@@ -105,7 +105,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
                     ExecutorConstants.COM_GET_REMOTE_FOLDER + Constants.MSG_SEP_1
                     + proxyPath + Constants.MSG_SEP_1
                     + Util.removeLfnFromPath(remoteDir) + Constants.MSG_SEP_1
-                    + localDir);
+                    + localDir + Constants.MSG_SEP_1 + zipResult);
             communication.sendEndOfMessage();
 
             String localFolderPath = communication.getMessage();
