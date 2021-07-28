@@ -47,14 +47,16 @@ public class GetRemoteFolderCommand extends Command {
 
     private String remoteDirPath;
     private String localDirPath;
+    private Boolean zipResult;
     private OperationBusiness operationBusiness;
 
     public GetRemoteFolderCommand(Communication communication,
-            String proxyFileName, String remoteDirPath, String localDirPath) {
+            String proxyFileName, String remoteDirPath, String localDirPath, String zipResult) {
 
         super(communication, proxyFileName);
         this.remoteDirPath = remoteDirPath;
         this.localDirPath = localDirPath;
+        this.zipResult = Boolean.parseBoolean(zipResult);
         
         operationBusiness = new OperationBusiness(proxyFileName);
     }
@@ -64,7 +66,7 @@ public class GetRemoteFolderCommand extends Command {
 
         try {
             String destPath = operationBusiness.downloadFolder(
-                    null, localDirPath, remoteDirPath, true);
+                    null, localDirPath, remoteDirPath, zipResult);
             communication.sendMessage(destPath);
 
         } catch (BusinessException ex) {
