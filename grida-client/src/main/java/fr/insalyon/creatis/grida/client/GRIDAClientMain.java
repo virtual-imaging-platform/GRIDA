@@ -176,8 +176,8 @@ public class GRIDAClientMain {
             result = client.getRemoteFile(firstArg, options.cmdOptions[1]);
             break;
         case "getfolder":
-            boolean zizResult = options.cmdOptions[2].equals("1");
-            result = client.getRemoteFolder(firstArg, options.cmdOptions[1], zizResult);
+            boolean zipResult = options.cmdOptions[2].equals("1");
+            result = client.getRemoteFolder(firstArg, options.cmdOptions[1], zipResult);
             break;
         case "list":
         {
