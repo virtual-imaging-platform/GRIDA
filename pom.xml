@@ -4,7 +4,7 @@
     <groupId>fr.insalyon.creatis</groupId>
     <artifactId>grida</artifactId>
     <packaging>pom</packaging>
-    <version>2.0.1</version>
+    <version>2.1.0</version>
     <name>GRIDA</name>
     <description>GRID data manager Agent</description>
     <inceptionYear>2011</inceptionYear>
@@ -37,21 +37,24 @@
 
     <repositories>
         <repository>
-            <id>creatis-thirdyparty</id>
+            <id>creatis</id>
             <name>Creatis Insa Lyon repository [creatis]</name>
-            <url>http://vip.creatis.insa-lyon.fr:9007/nexus/content/repositories/thirdparty</url>
+            <url>https://vip.creatis.insa-lyon.fr:9007/nexus/repository/public</url>
         </repository>
     </repositories>
 
     <distributionManagement>
         <repository>
             <id>creatis-releases</id>
-            <url>http://vip.creatis.insa-lyon.fr:9007/nexus/content/repositories/releases</url>
+            <name>Internal Releases</name>
+            <url>https://vip.creatis.insa-lyon.fr:9007/nexus/repository/releases</url>
         </repository>
+
         <snapshotRepository>
             <id>creatis-snapshots</id>
             <name>Internal Snapshots</name>
-            <url>http://vip.creatis.insa-lyon.fr:9007/nexus/content/repositories/snapshots</url>
+            <url>https://vip.creatis.insa-lyon.fr:9007/nexus/repository/snapshots</url>
         </snapshotRepository>
+
     </distributionManagement>
 </project>

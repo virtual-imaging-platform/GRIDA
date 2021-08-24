@@ -70,8 +70,7 @@ public class Server {
             PoolReplicate.getInstance();
 
             // Socket
-            ServerSocket serverSocket = new ServerSocket(
-                    Configuration.getInstance().getPort(), 50, InetAddress.getLocalHost());
+            ServerSocket serverSocket = new ServerSocket(Configuration.getInstance().getPort(), 50);
 
             while (true) {
                 Socket socket = serverSocket.accept();
