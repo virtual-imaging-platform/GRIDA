@@ -347,7 +347,7 @@ public class DiracOperations implements Operations {
         executeCommand(
             proxy,
             "Unable to delete folder '" + path,
-            "drm", "-r", path);
+            "dirac-dms-clean-directory", path);
     }
 
     @Override
@@ -358,7 +358,7 @@ public class DiracOperations implements Operations {
         executeCommand(
             proxy,
             "Unable to delete file '" + path,
-            "drm", path);
+            "dirac-dms-remove-files", path);
     }
 
     @Override
