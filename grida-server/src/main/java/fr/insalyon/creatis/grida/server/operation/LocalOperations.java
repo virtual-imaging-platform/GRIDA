@@ -84,7 +84,6 @@ public class LocalOperations implements Operations {
 
     @Override
     public String downloadFile(String operationID, String proxy, String localDirPath, String fileName, String remoteFilePath) throws OperationException {
-        // TODO : handle operationID
         if ( ! exists(proxy, remoteFilePath)) {
             throw new OperationException("Cannot download " + remoteFilePath + ", file does not exist");
         }
@@ -112,7 +111,6 @@ public class LocalOperations implements Operations {
 
     @Override
     public String uploadFile(String operationID, String proxy, String localFilePath, String remoteDir) throws OperationException {
-        // TODO : handle operationID
         if ( ! exists(proxy, localFilePath)) {
             throw new OperationException("Cannot upload " + localFilePath + ", file does not exist");
         }

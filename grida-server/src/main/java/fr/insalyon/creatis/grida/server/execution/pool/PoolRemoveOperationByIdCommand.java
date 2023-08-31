@@ -59,7 +59,7 @@ public class PoolRemoveOperationByIdCommand extends Command {
 
         try {
             new PoolBusiness().removeOperationById(id);
-            communication.sendSucessMessage();
+            communication.sendSuccessMessage();
 
         } catch (BusinessException ex) {
             communication.sendErrorMessage(ex.getMessage());

@@ -27,6 +27,7 @@
         <module>grida-common</module>
         <module>grida-client</module>
         <module>grida-server</module>
+        <module>grida-standalone</module>
     </modules>
 
     <properties>

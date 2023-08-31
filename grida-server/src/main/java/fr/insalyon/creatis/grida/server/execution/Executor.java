@@ -88,11 +88,10 @@ public class Executor extends Thread {
 
         try {
             String[] tokens = message.split(Constants.MSG_SEP_1);
-            int command = new Integer(tokens[0]);
+            int command = Integer.parseInt(tokens[0]);
             String proxy = tokens[1];
 
             switch (command) {
-
                 case ExecutorConstants.COM_GET_REMOTE_FILE:
                     return new GetRemoteFileCommand(communication, proxy, tokens[2], tokens[3]);
 

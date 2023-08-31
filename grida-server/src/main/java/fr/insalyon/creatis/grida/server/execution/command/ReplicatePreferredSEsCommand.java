@@ -62,7 +62,7 @@ public class ReplicatePreferredSEsCommand extends Command {
         
         try {
             operationBusiness.replicateFile(sourcePath);
-            communication.sendSucessMessage();
+            communication.sendSuccessMessage();
 
         } catch (BusinessException ex) {
             communication.sendErrorMessage(ex.getMessage());

@@ -35,6 +35,8 @@
 package fr.insalyon.creatis.grida.client;
 
 import fr.insalyon.creatis.grida.common.Communication;
+import fr.insalyon.creatis.grida.common.SocketCommunication;
+
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -58,7 +60,7 @@ public abstract class AbstractGRIDAClient {
     protected Communication getCommunication() throws GRIDAClientException {
 
         try {
-            return new Communication(new Socket(host, port));
+            return new SocketCommunication(new Socket(host, port));
 
         } catch (UnknownHostException ex) {
             throw new GRIDAClientException(ex);
