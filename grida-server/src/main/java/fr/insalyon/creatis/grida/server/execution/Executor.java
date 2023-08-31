@@ -97,7 +97,7 @@ public class Executor extends Thread {
                     return new GetRemoteFileCommand(communication, proxy, tokens[2], tokens[3]);
 
                 case ExecutorConstants.COM_GET_REMOTE_FOLDER:
-                    return new GetRemoteFolderCommand(communication, proxy, tokens[2], tokens[3]);
+                    return new GetRemoteFolderCommand(communication, proxy, tokens[2], tokens[3], tokens[4]);
 
                 case ExecutorConstants.COM_LIST_FILES_AND_FOLDERS:
                     return new ListFilesAndFoldersCommand(communication, proxy, tokens[2], tokens[3],false);

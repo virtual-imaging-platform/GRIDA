@@ -89,15 +89,21 @@ public class GRIDAClient extends AbstractGRIDAClient {
         }
     }
 
+    // keep legacy behavior to zip the result when the zipResult option is not given
+    public String getRemoteFolder(String remoteDir, String localDir) throws GRIDAClientException {
+        return getRemoteFolder(remoteDir, localDir, true);
+    }
+
     /**
      * Downloads a remote folder to a specific directory.
      *
      * @param remoteDir Remote folder path
      * @param localDir Local directory path where the folder should be downloaded
+     * @param zipResult zip or not the result
      * @return Local path of the downloaded folder
      * @throws GRIDAClientException
      */
-    public String getRemoteFolder(String remoteDir, String localDir) throws GRIDAClientException {
+    public String getRemoteFolder(String remoteDir, String localDir, Boolean zipResult) throws GRIDAClientException {
 
         try {
             Communication communication = getCommunication();
@@ -105,7 +111,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
                     ExecutorConstants.COM_GET_REMOTE_FOLDER + Constants.MSG_SEP_1
                     + proxyPath + Constants.MSG_SEP_1
                     + Util.removeLfnFromPath(remoteDir) + Constants.MSG_SEP_1
-                    + localDir);
+                    + localDir + Constants.MSG_SEP_1 + zipResult.toString());
             communication.sendEndOfMessage();
 
             String localFolderPath = communication.getMessage();

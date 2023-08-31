@@ -10,7 +10,7 @@ files.  It supports Dirac file catalog, and LFC as a legacy.
 
 Grida is essentially used by the Vip platform.  The following
 describes how to install and configure Grida for a Vip server.  The
-version used are `v6r21p1` for Dirac, and `2.0.1` for Grida.
+version used are `v6r21p1` for Dirac, and `2.2.0` for Grida.
 
 ### Dirac installation
 
@@ -50,8 +50,8 @@ After=network.target
 User=vip
 Type=simple
 WorkingDirectory=/home/vip/grida
-Environment=JAVA_HOME=/etc/alternatives/jre_1.8.0
-ExecStart=/etc/alternatives/jre_1.8.0/bin/java -jar /home/vip/grida/grida-server-2.0.1.jar
+Environment=JAVA_HOME=/etc/alternatives/jre-11
+ExecStart=/etc/alternatives/jre-11/bin/java -jar /home/vip/grida/grida-server-2.2.0.jar
 [Install]
 WantedBy=multi-user.target
 ```
@@ -97,7 +97,7 @@ It allows to interact with the server.
 
 The client also has a command line, that can be used with the command:
 ```shell
-java -jar grida-client-2.0.1.jar
+java -jar grida-client-2.1.0.jar
 ```
 
 When this command is run without arguments, it prints the usage to
