@@ -3,7 +3,7 @@ package fr.insalyon.creatis.grida.common;
 import java.io.IOException;
 
 public abstract class Communication {
-    abstract void sendMessage(String message);
+    abstract public void sendMessage(String message);
 
     public void sendErrorMessage(String message) {
         sendMessage(Constants.MSG_ERROR + message);

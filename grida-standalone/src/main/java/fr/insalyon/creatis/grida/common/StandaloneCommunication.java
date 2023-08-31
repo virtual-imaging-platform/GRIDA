@@ -16,7 +16,7 @@ public class StandaloneCommunication extends Communication {
     public void sendMessage(String message) {
         this.messageBuilder.append(message);
     }
-    
+
 
     @Override
     public void sendEndOfMessage() {

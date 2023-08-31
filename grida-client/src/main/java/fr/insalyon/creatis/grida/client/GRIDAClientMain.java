@@ -53,11 +53,28 @@ import org.apache.commons.cli.ParseException;
 
 public class GRIDAClientMain {
     public static void main(String[] args) {
-        GRIDAClientMain main = new GRIDAClientMain();
-        ClientOptions options = main.handleArgs(args);
+        new GRIDAClientMain(args).run();
+    }
 
+    final protected ClientOptions options;
+    protected GRIDAClient client;
+    protected GRIDAPoolClient poolClient;
+
+    public GRIDAClientMain(String[] args) {
+        options = handleArgs(args);
+        initClient();
+    }
+
+    protected void initClient() {
+        this.client = new GRIDAClient(
+                options.host, options.port, options.proxy);
+        this.poolClient = new GRIDAPoolClient(
+                options.host, options.port, options.proxy);
+    }
+
+    private void run() {
         try {
-            String result = main.executeCommand(options);
+            String result = executeCommand(options);
             System.out.println(result);
         } catch (GRIDAClientException gce) {
             gce.printStackTrace(System.err);
@@ -158,13 +175,6 @@ public class GRIDAClientMain {
         if (!isNumberOfArgumentsCorrect(options)) {
             System.exit(1);
         }
-
-        // Both clients are used in many commands, so they are created
-        // globally.  Impact is low if they are finally not used.
-        GRIDAClient client = new GRIDAClient(
-            options.host, options.port, options.proxy);
-        GRIDAPoolClient poolClient = new GRIDAPoolClient(
-            options.host, options.port, options.proxy);
 
         String firstArg = options.cmdOptions.length == 0
             ? null
@@ -433,7 +443,7 @@ public class GRIDAClientMain {
         return sb.toString();
     }
 
-    private static class ClientOptions {
+    protected static class ClientOptions {
         public final String host;
         public final int port;
         public final String proxy;
