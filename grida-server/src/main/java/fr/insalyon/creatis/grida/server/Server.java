@@ -39,6 +39,8 @@ import fr.insalyon.creatis.grida.common.SocketCommunication;
 import fr.insalyon.creatis.grida.server.dao.DAOException;
 import fr.insalyon.creatis.grida.server.dao.DAOFactory;
 import fr.insalyon.creatis.grida.server.execution.*;
+
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -58,24 +60,29 @@ public class Server {
         new Server();
     }
 
+
     public Server() {
+        this(null);
+    }
+
+    public Server(File confFile) {
         try {
-             this.init();
+             this.init(confFile);
         } catch (DAOException | IOException ex) {
             logger.error("Cannot start grida server", ex);
         }
     }
 
-    protected void init() throws DAOException, IOException {
-        this.initConfig();
+    protected void init(File confFile) throws DAOException, IOException {
+        this.initConfig(confFile);
         logger.info("Starting GRIDA Server on port " + Configuration.getInstance().getPort());
         this.initPools();
         this.startSocket();
     }
 
-    protected void initConfig() {
+    protected void initConfig(File confFile) {
         PropertyConfigurator.configure(Server.class.getClassLoader().getResource("gridaLog4j.properties"));
-        Configuration.getInstance();
+        Configuration.getInstance(confFile);
     }
 
     protected void initPools() throws DAOException {

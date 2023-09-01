@@ -30,11 +30,6 @@
  */
 package fr.insalyon.creatis.grida.client;
 
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.io.IOException;
-
-import static fr.insalyon.creatis.grida.common.ExecutorConstants.*;
 import fr.insalyon.creatis.grida.common.bean.CachedFile;
 import fr.insalyon.creatis.grida.common.bean.GridData;
 import fr.insalyon.creatis.grida.common.bean.Operation;
@@ -47,7 +42,6 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
@@ -72,7 +66,7 @@ public class GRIDAClientMain {
                 options.host, options.port, options.proxy);
     }
 
-    private void run() {
+    protected void run() {
         try {
             String result = executeCommand(options);
             System.out.println(result);
@@ -93,6 +87,11 @@ public class GRIDAClientMain {
             "proxy",
             true,
             "path of the user's proxy file (default $X509_USER_PROXY)");
+        options.addOption(
+                "c",
+                "conf",
+                true,
+                "path of the grida confFile(default grida-server.conf)");
 
         CommandLineParser parser = new DefaultParser();
 
@@ -104,9 +103,17 @@ public class GRIDAClientMain {
             String proxy = cmd.getOptionValue(
                 'r', System.getenv("X509_USER_PROXY"));
 
-            if (!isProxyFileExisting(proxy)) {
+            if (!doesFileExist(proxy)) {
                 printErrorAndExit(
                     "Proxy file does not exist: " + proxy, options);
+            }
+
+            String confFile = cmd.getOptionValue(
+                    'c', "grida-server.conf");
+
+            if (!doesFileExist(confFile)) {
+                printErrorAndExit(
+                        "Conf file does not exist: " + confFile, options);
             }
 
             String[] remainingArgs = cmd.getArgs();
@@ -118,7 +125,7 @@ public class GRIDAClientMain {
             String[] cmdOptions =
                 Arrays.copyOfRange(remainingArgs, 1, remainingArgs.length);
 
-            return new ClientOptions(host, port, proxy, command, cmdOptions);
+            return new ClientOptions(host, port, proxy, confFile, command, cmdOptions);
         } catch(ParseException e) {
             printErrorAndExit(e.getMessage(), options);
         } catch(NumberFormatException e) {
@@ -334,10 +341,10 @@ public class GRIDAClientMain {
         return result;
     }
 
-    private boolean isProxyFileExisting(String proxy) {
-        return proxy != null &&
-            new File(proxy).exists() &&
-            new File(proxy).isFile();
+    private boolean doesFileExist(String file) {
+        return file != null &&
+            new File(file).exists() &&
+            new File(file).isFile();
     }
 
     private boolean isNumberOfArgumentsCorrect(ClientOptions options) {
@@ -447,6 +454,7 @@ public class GRIDAClientMain {
         public final String host;
         public final int port;
         public final String proxy;
+        public final String confFile;
         public final String command;
         public final String[] cmdOptions;
 
@@ -454,11 +462,13 @@ public class GRIDAClientMain {
             String host,
             int port,
             String proxy,
+            String confFile,
             String command,
             String[] cmdOptions) {
             this.host = host;
             this.port = port;
             this.proxy = proxy;
+            this.confFile = confFile;
             this.command = command;
             this.cmdOptions = cmdOptions;
         }

@@ -4,6 +4,8 @@ import fr.insalyon.creatis.grida.common.Communication;
 import fr.insalyon.creatis.grida.common.StandaloneCommunication;
 import fr.insalyon.creatis.grida.server.StandaloneServer;
 
+import java.io.File;
+
 /*
     This just use a new communication without Socket for a client to exchange with the server implementation
 
@@ -14,9 +16,9 @@ import fr.insalyon.creatis.grida.server.StandaloneServer;
  */
 public class StandaloneGridaClient extends GRIDAClient {
 
-    public StandaloneGridaClient(String proxyPath) {
+    public StandaloneGridaClient(String proxyPath, File confFile) {
         super(null, -1, proxyPath);
-        new StandaloneServer(); // mandatory to configure stuff
+        new StandaloneServer(confFile); // mandatory to configure stuff
     }
 
     @Override
