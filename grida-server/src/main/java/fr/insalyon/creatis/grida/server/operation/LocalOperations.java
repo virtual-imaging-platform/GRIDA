@@ -36,7 +36,7 @@ public class LocalOperations implements Operations {
     }
 
     @Override
-    public List<GridData> listFilesAndFolders(String proxy, String path, boolean listComment) throws OperationException {
+    public List<GridData> listFilesAndFolders(String proxy, String path) throws OperationException {
         if ( ! exists(proxy, path)) {
             return Collections.emptyList();
         }

@@ -46,9 +46,7 @@ public interface Operations {
      * of this folder. If path is a file, it returns a list with a single
      * GridData about this file. If path does not exist, returns an empty list
      */
-    List<GridData> listFilesAndFolders(
-        String proxy, String path, boolean listComment /* only in lcg */)
-        throws OperationException;
+    List<GridData> listFilesAndFolders(String proxy, String path) throws OperationException;
 
     /**
      * Creates all the missing directories of localDirPath if necessary

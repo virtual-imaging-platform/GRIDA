@@ -7,12 +7,12 @@ import fr.insalyon.creatis.grida.server.StandaloneServer;
 import java.io.File;
 
 /*
-    This just use a new communication without Socket for a client to exchange with the server implementation
+    This just uses a new communication without Socket for a client to exchange with the server implementation
 
     The StandaloneCommunication handles everything :
     - When the client calls sendEndOfMessage, StandaloneCommunication call the Server Executor synchronously
     - StandaloneCommunication resets its message for the Executor to write its response in
-    - When the executor has finished, the client get the response with getMessage
+    - When the executor has finished, the client gets the response with getMessage
  */
 public class StandaloneGridaClient extends GRIDAClient {
 
