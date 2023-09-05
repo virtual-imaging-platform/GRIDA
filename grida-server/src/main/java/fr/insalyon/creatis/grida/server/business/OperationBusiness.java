@@ -86,11 +86,11 @@ public class OperationBusiness {
      * @return
      * @throws BusinessException
      */
-    public List<GridData> listFilesAndFolders(String path, boolean listComments)
+    public List<GridData> listFilesAndFolders(String path)
         throws BusinessException {
 
         try {
-            return operations.listFilesAndFolders(proxy, path, listComments);
+            return operations.listFilesAndFolders(proxy, path);
         } catch (OperationException ex) {
             throw new BusinessException(ex);
         }
@@ -149,7 +149,7 @@ public class OperationBusiness {
             List<String> errorFiles = new ArrayList<String>();
             if (exist(remoteDirPath)) {
 
-                for (GridData data : listFilesAndFolders(remoteDirPath,false)) {
+                for (GridData data : listFilesAndFolders(remoteDirPath)) {
                     try {
                         if (data.getType() == GridData.Type.Folder) {
                             downloadFolder(operationID, localDirPath + "/" + data.getName(),

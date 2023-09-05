@@ -63,7 +63,7 @@ public class CreateFolderCommand extends Command {
         
         try {
             operationBusiness.createFolder(newDir);
-            communication.sendSucessMessage();
+            communication.sendSuccessMessage();
 
         } catch (BusinessException ex) {
             communication.sendErrorMessage(ex.getMessage());

@@ -73,7 +73,7 @@ public class DeleteCommand extends Command {
             }
         }
         if (errorFiles.isEmpty()) {
-            communication.sendSucessMessage();
+            communication.sendSuccessMessage();
         } else {
             String errorMsg = "Unable to delete the following data: "
                     + errorFiles.toString();

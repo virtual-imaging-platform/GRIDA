@@ -62,7 +62,7 @@ public class DeleteZombieFileCommand extends Command {
 
         try {
             zombieBusiness.deleteZombieFile(surl);
-            communication.sendSucessMessage();
+            communication.sendSuccessMessage();
 
         } catch (BusinessException ex) {
             communication.sendErrorMessage(ex.getMessage());

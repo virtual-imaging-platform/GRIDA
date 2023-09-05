@@ -133,27 +133,11 @@ public class GRIDAClient extends AbstractGRIDAClient {
      * @throws GRIDAClientException 
      */
     public List<GridData> getFolderData(String dir, boolean refresh) throws GRIDAClientException {
-        return getFolderData(dir,refresh,false);
-    }
-
-    /**
-     * Gets a list of files and folders from a directory.
-     * 
-     * @param dir Path of the directory
-     * @param refresh Tells if the server should try to read data from cache
-     * @param listComments tells if the server should try to list comments (crashes if LFN has space and no comment)
-     * @return List of files and folders from a directory
-     * @throws GRIDAClientException 
-     */
-    public List<GridData> getFolderData(String dir, boolean refresh, boolean listComments) throws GRIDAClientException {
-
         try {
             Communication communication = getCommunication();
 
-            int messageType = listComments ? ExecutorConstants.COM_LIST_FILES_AND_FOLDERS_WITH_COMMENTS : ExecutorConstants.COM_LIST_FILES_AND_FOLDERS;
-                
             communication.sendMessage(
-                    messageType + Constants.MSG_SEP_1
+                    ExecutorConstants.COM_LIST_FILES_AND_FOLDERS + Constants.MSG_SEP_1
                     + proxyPath + Constants.MSG_SEP_1
                     + Util.removeLfnFromPath(dir) + Constants.MSG_SEP_1
                     + refresh);

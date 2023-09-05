@@ -44,21 +44,16 @@ public class Constants {
     public static final String LAB_AGENT_PORT = "agent.port";
     public static final String LAB_AGENT_RETRYCOUNT = "agent.retrycount";
     public static final String LAB_AGENT_MIN_AVAILABLE_DISKSPACE = "agent.min.available.diskspace";
-    public static final String LAB_BDII_HOST = "bdii.host";
-    public static final String LAB_BDII_PORT = "bdii.port";
     public static final String LAB_CACHE_MAX_ENTRIES = "cache.list.max.entries";
     public static final String LAB_CACHE_MAX_HOURS = "cache.list.max.hours";
     public static final String LAB_CACHE_MAX_SIZE = "cache.files.max.size";
     public static final String LAB_CACHE_PATH = "cache.files.path";
-    public static final String LAB_FAILOVER_SERVERS = "failover.servers";
-    public static final String LAB_LFC_HOST = "lfc.host";
     public static final String LAB_PREFERRED_SES = "preferredSEsList";
     public static final String LAB_POOL_MAX_DELETE = "pool.max.delete";
     public static final String LAB_POOL_MAX_DOWNLOAD = "pool.max.download";
     public static final String LAB_POOL_MAX_HISTORY = "pool.max.history";
     public static final String LAB_POOL_MAX_REPLICATION = "pool.max.replication";
     public static final String LAB_POOL_MAX_UPLOAD = "pool.max.upload";
-    public static final String LAB_VO = "vo";
     public static final String LAB_COMMANDS_TYPE = "commands.type";
     public static final String LAB_DIRAC_BASHRC = "dirac.bashrc";
 }

@@ -35,9 +35,12 @@
 package fr.insalyon.creatis.grida.server;
 
 import fr.insalyon.creatis.grida.common.Communication;
+import fr.insalyon.creatis.grida.common.SocketCommunication;
 import fr.insalyon.creatis.grida.server.dao.DAOException;
 import fr.insalyon.creatis.grida.server.dao.DAOFactory;
 import fr.insalyon.creatis.grida.server.execution.*;
+
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -54,34 +57,50 @@ public class Server {
     private static final Logger logger = Logger.getLogger(Server.class);
 
     public static void main(String[] args) {
+        new Server();
+    }
 
+
+    public Server() {
+        this(null);
+    }
+
+    public Server(File confFile) {
         try {
-            PropertyConfigurator.configure(Server.class.getClassLoader().getResource("gridaLog4j.properties"));
+             this.init(confFile);
+        } catch (DAOException | IOException ex) {
+            logger.error("Cannot start grida server", ex);
+        }
+    }
 
-            Configuration.getInstance();
-            logger.info("Starting GRIDA Server on port " + Configuration.getInstance().getPort());
-            
-            // Pools
-            DAOFactory.getDAOFactory().getPoolDAO().resetOperations();
-            PoolClean.getInstance();
-            PoolDownload.getInstance();
-            PoolUpload.getInstance();
-            PoolDelete.getInstance();
-            PoolReplicate.getInstance();
+    protected void init(File confFile) throws DAOException, IOException {
+        this.initConfig(confFile);
+        logger.info("Starting GRIDA Server on port " + Configuration.getInstance().getPort());
+        this.initPools();
+        this.startSocket();
+    }
 
-            // Socket
-            ServerSocket serverSocket = new ServerSocket(Configuration.getInstance().getPort(), 50);
+    protected void initConfig(File confFile) {
+        PropertyConfigurator.configure(Server.class.getClassLoader().getResource("gridaLog4j.properties"));
+        Configuration.getInstance(confFile);
+    }
 
-            while (true) {
-                Socket socket = serverSocket.accept();
-                Communication communication = new Communication(socket);
-                new Executor(communication).start();
-            }
+    protected void initPools() throws DAOException {
+        DAOFactory.getDAOFactory().getPoolDAO().resetOperations();
+        PoolClean.getInstance();
+        PoolDownload.getInstance();
+        PoolUpload.getInstance();
+        PoolDelete.getInstance();
+        PoolReplicate.getInstance();
+    }
 
-        } catch (DAOException ex) {
-            logger.error(ex);
-        } catch (IOException ex) {
-            logger.error(ex);
+    protected void startSocket() throws IOException {
+        ServerSocket serverSocket = new ServerSocket(Configuration.getInstance().getPort(), 50);
+
+        while (true) {
+            Socket socket = serverSocket.accept();
+            Communication communication = new SocketCommunication(socket);
+            new Executor(communication).start();
         }
     }
 }

@@ -88,7 +88,7 @@ public class PoolClean extends Thread {
                         logger.error(ex);
                     }
                 }
-                sleep(86400000);
+                sleep(24*3600*1000);
 
             } catch (DAOException ex) {
                 // do nothing

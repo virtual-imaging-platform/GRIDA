@@ -88,15 +88,7 @@ public class DiracOperations implements Operations {
     }
 
     @Override
-    public List<GridData> listFilesAndFolders(
-        String proxy, String path, boolean listComment)
-        throws OperationException {
-
-        if (listComment) {
-            String error = "[dirac] Listing with comments is not implemented.";
-            logger.error(error);
-            throw new OperationException(error);
-        }
+    public List<GridData> listFilesAndFolders(String proxy, String path) throws OperationException {
 
         logger.info("[dirac] Listing contents of: " + path);
         try {
@@ -330,7 +322,7 @@ public class DiracOperations implements Operations {
         File f = new File(path);
         String name = f.getName();
 
-        List<GridData> gdl = listFilesAndFolders(proxy, f.getParent(), false);
+        List<GridData> gdl = listFilesAndFolders(proxy, f.getParent());
         for (GridData gd : gdl) {
             if (gd.getName().equals(name)) {
                 return gd.getPermissions().startsWith("d");
@@ -460,7 +452,7 @@ public class DiracOperations implements Operations {
         throws OperationException {
 
         long size = 0;
-        for (GridData data : listFilesAndFolders(proxy, path, false)) {
+        for (GridData data : listFilesAndFolders(proxy, path)) {
             if (data.getType() == GridData.Type.Folder) {
                 size += getDataSize(proxy, path + "/" + data.getName());
             } else {
