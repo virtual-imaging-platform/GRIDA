@@ -4,7 +4,7 @@
     <groupId>fr.insalyon.creatis</groupId>
     <artifactId>grida</artifactId>
     <packaging>pom</packaging>
-    <version>2.2.0</version>
+    <version>2.3.0</version>
     <name>GRIDA</name>
     <description>GRID data manager Agent</description>
     <inceptionYear>2011</inceptionYear>
@@ -27,6 +27,7 @@
         <module>grida-common</module>
         <module>grida-client</module>
         <module>grida-server</module>
+        <module>grida-standalone</module>
     </modules>
 
     <properties>

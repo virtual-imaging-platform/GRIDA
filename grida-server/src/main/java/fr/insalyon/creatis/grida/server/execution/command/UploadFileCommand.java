@@ -84,7 +84,6 @@ public class UploadFileCommand extends Command {
                     }
                     sb.append(se);
                 }
-                Configuration.getInstance().setPreferredSEs(sb.toString());
                 operationBusiness.replicateFile(destPath);
                 
             } else {
@@ -101,9 +100,5 @@ public class UploadFileCommand extends Command {
             communication.sendErrorMessage(ex.getMessage());
         }
         communication.sendEndOfMessage();
-
-        if (storageElements.length > 0) {
-            Configuration.getInstance().setPreferredSEs();
-        }
     }
 }

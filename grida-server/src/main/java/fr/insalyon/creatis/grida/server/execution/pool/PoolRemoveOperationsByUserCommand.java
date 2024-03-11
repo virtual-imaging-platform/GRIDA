@@ -57,7 +57,7 @@ public class PoolRemoveOperationsByUserCommand extends Command {
 
         try {
             new PoolBusiness().removeOperationsByUser(user);
-            communication.sendSucessMessage();
+            communication.sendSuccessMessage();
 
         } catch (BusinessException ex) {
             communication.sendErrorMessage(ex.getMessage());

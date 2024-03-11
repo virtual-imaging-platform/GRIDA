@@ -88,11 +88,10 @@ public class Executor extends Thread {
 
         try {
             String[] tokens = message.split(Constants.MSG_SEP_1);
-            int command = new Integer(tokens[0]);
+            int command = Integer.parseInt(tokens[0]);
             String proxy = tokens[1];
 
             switch (command) {
-
                 case ExecutorConstants.COM_GET_REMOTE_FILE:
                     return new GetRemoteFileCommand(communication, proxy, tokens[2], tokens[3]);
 
@@ -100,7 +99,7 @@ public class Executor extends Thread {
                     return new GetRemoteFolderCommand(communication, proxy, tokens[2], tokens[3], tokens[4]);
 
                 case ExecutorConstants.COM_LIST_FILES_AND_FOLDERS:
-                    return new ListFilesAndFoldersCommand(communication, proxy, tokens[2], tokens[3],false);
+                    return new ListFilesAndFoldersCommand(communication, proxy, tokens[2], tokens[3]);
 
                 case ExecutorConstants.COM_GET_MODIFICATION_DATE:
                     return new GetModificationDateCommand(communication, proxy, tokens[2].split(Constants.MSG_SEP_2));
@@ -128,9 +127,6 @@ public class Executor extends Thread {
                     
                 case ExecutorConstants.COM_SET_COMMENT:
                     return new SetCommentCommand(communication,proxy,tokens[2],tokens[3]);
-                    
-                case ExecutorConstants.COM_LIST_FILES_AND_FOLDERS_WITH_COMMENTS:
-                    return new ListFilesAndFoldersCommand(communication,proxy,tokens[2],tokens[3],true);
 
                 // Cache Operations
                 case ExecutorConstants.CACHE_LIST_FILES:

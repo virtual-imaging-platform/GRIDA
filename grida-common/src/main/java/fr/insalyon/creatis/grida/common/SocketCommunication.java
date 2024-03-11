@@ -32,41 +32,59 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL license and that you accept its terms.
  */
-package fr.insalyon.creatis.grida.server.execution.cache;
+package fr.insalyon.creatis.grida.common;
 
-import fr.insalyon.creatis.grida.server.execution.Command;
-import fr.insalyon.creatis.grida.common.Communication;
-import fr.insalyon.creatis.grida.server.business.BusinessException;
-import fr.insalyon.creatis.grida.server.business.CacheBusiness;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 
 /**
  *
  * @author Rafael Silva
  */
-public class DeleteCachedFileCommand extends Command {
+public class SocketCommunication extends Communication {
 
-    private String path;
-    private CacheBusiness cacheBusiness;
+    private BufferedReader in;
+    private PrintWriter out;
 
-    public DeleteCachedFileCommand(Communication communication,
-            String proxyFileName, String path) {
-        
-        super(communication, proxyFileName);
-        this.path = path;
-        
-        cacheBusiness = new CacheBusiness();
+    public SocketCommunication(Socket socket) throws IOException {
+
+        this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        this.out = new PrintWriter(socket.getOutputStream(), true);
     }
 
     @Override
-    public void execute() {
+    public void sendMessage(String message) {
+        out.println(message);
+        out.flush();
+    }
 
-        try {
-            cacheBusiness.deleteCachedFile(path);
-            communication.sendSuccessMessage();
+    @Override
+    public String getMessage() throws IOException {
 
-        } catch (BusinessException ex) {
-            communication.sendErrorMessage(ex.getMessage());
+        StringBuilder messageBuilder = new StringBuilder();
+
+        String message = in.readLine();
+        if (message == null || message.startsWith(Constants.MSG_ERROR)) {
+            throw new IOException(message);
         }
-        communication.sendEndOfMessage();
+
+        while (!message.equals(Constants.MSG_END)) {
+            if (!messageBuilder.toString().isEmpty()) {
+                messageBuilder.append(Constants.MSG_SEP_1);
+            }
+            messageBuilder.append(message);
+            message = in.readLine();
+        }
+
+        return messageBuilder.toString();
+    }
+
+    @Override
+    public void close() throws IOException {
+        
+        out.close();
     }
 }

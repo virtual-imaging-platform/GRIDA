@@ -51,5 +51,9 @@ public abstract class Command {
         this.proxyFileName = proxyFileName;
     }
 
+    public Communication getCommunication() {
+        return this.communication;
+    }
+
     public abstract void execute();
 }
