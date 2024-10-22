@@ -437,9 +437,9 @@ public class GRIDAPoolClient extends AbstractGRIDAClient {
 
         String[] operation = data.split(Constants.MSG_SEP_2);
         return new Operation(
-                operation[0], new Date(new Long(operation[1])), operation[2],
+                operation[0], new Date(Long.valueOf(operation[1])), operation[2],
                 operation[3], Type.valueOf(operation[4]),
                 Status.valueOf(operation[5]), operation[6],
-                new Double(operation[7]), new Integer(operation[8]));
+                Double.valueOf(operation[7]), Integer.valueOf(operation[8]));
     }
 }

@@ -197,9 +197,9 @@ public class Configuration {
     private boolean isBinaryAvailable(String name, String envFile) {
         boolean isAvailable = false;
         try {
-            String command = envFile == null
-                ? "which"
-                : "source " + envFile + "; which";
+            // String command = envFile == null
+            //     ? "which"
+            //     : "source " + envFile + "; which";
 
             ProcessBuilder builder = envFile == null
                 ? new ProcessBuilder("which", name)

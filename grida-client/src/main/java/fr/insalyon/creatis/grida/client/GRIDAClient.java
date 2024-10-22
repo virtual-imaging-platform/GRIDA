@@ -156,9 +156,9 @@ public class GRIDAClient extends AbstractGRIDAClient {
 
                     } else {
                         if(d.length == 7)
-                            filesList.add(new GridData(d[0], GridData.Type.File, new Long(d[2]), d[3], d[4], d[5],d[6]));
+                            filesList.add(new GridData(d[0], GridData.Type.File, Long.valueOf(d[2]), d[3], d[4], d[5],d[6]));
                         else
-                            filesList.add(new GridData(d[0], GridData.Type.File, new Long(d[2]), d[3], d[4], d[5],""));
+                            filesList.add(new GridData(d[0], GridData.Type.File, Long.valueOf(d[2]), d[3], d[4], d[5],""));
                     }
                 }
             }
@@ -215,7 +215,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
 
             List<Long> datesList = new ArrayList<Long>();
             for (String date : dates.split(Constants.MSG_SEP_1)) {
-                datesList.add(new Long(date));
+                datesList.add(Long.valueOf(date));
             }
 
             return datesList;
