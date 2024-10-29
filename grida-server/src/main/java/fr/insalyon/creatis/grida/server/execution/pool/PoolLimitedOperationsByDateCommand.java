@@ -57,8 +57,8 @@ public class PoolLimitedOperationsByDateCommand extends Command {
         super(communication, proxyFileName);
         
         this.user = user;
-        this.limit = new Integer(limitString);
-        this.startDate = new Date(new Long(dateString));
+        this.limit = Integer.valueOf(limitString);
+        this.startDate = new Date(Long.valueOf(dateString));
     }
 
     @Override

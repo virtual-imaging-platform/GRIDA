@@ -170,16 +170,16 @@ public class DiracOperations implements Operations {
 
             Long length = null;
             try {
-                length = new Long(tokens[INDEX_SIZE]);
+                length = Long.valueOf(tokens[INDEX_SIZE]);
             } catch (java.lang.NumberFormatException e) {
                 logger.warn(
                     "Cannot parse long: \"" + tokens[INDEX_SIZE] +
                     "\". Setting file length to 0");
-                length = new Long(0);
+                length = Long.valueOf(0);
             } catch (java.lang.ArrayIndexOutOfBoundsException e) {
                 logger.warn(
                     "Cannot get long. Setting file length to 0");
-                length = new Long(0);
+                length = Long.valueOf(0);
             }
 
             String comment = "";
