@@ -62,6 +62,8 @@ public class CreateFolderCommand extends Command {
     public void execute() {
         
         try {
+            operationBusiness.isTransferPossible(null);
+
             operationBusiness.createFolder(newDir);
             communication.sendSuccessMessage();
 

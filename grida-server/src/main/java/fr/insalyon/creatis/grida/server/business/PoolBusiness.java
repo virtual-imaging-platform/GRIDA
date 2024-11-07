@@ -57,9 +57,10 @@ public class PoolBusiness {
 
     private static final Logger logger = Logger.getLogger(PoolBusiness.class);
     private PoolDAO poolDAO;
+    private DiskspaceManager diskManager;
 
     public PoolBusiness() {
-
+        diskManager = new DiskspaceManager();
         poolDAO = DAOFactory.getDAOFactory().getPoolDAO();
     }
 
@@ -93,8 +94,8 @@ public class PoolBusiness {
             Operation op = new Operation(id, source, dest, type, user,
                     proxyFileName, size);
             
-            long freeSpace = new File(".").getFreeSpace();
-            long totalSpace = new File(".").getTotalSpace();
+            long freeSpace = diskManager.getFreeSpace();
+            long totalSpace = diskManager.getTotalSpace();
             if (freeSpace - size < totalSpace * Configuration.getInstance().getMinAvailableDiskSpace()) {
                 op.setStatus(Operation.Status.Failed);
                 logger.error("Unable to download '" + source + "' due to disk space limits. Size: " + ((int) size / 1024 / 1024) + " MB.");

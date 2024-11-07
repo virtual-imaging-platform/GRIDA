@@ -58,11 +58,19 @@ public class OperationBusiness {
     private Configuration configuration;
     private String proxy;
     private Operations operations;
+    private DiskspaceManager diskManager;
+
+    public OperationBusiness() {}
 
     public OperationBusiness(String proxy) {
         this.proxy = proxy;
         configuration = Configuration.getInstance();
         operations = configuration.getOperations();
+        diskManager = new DiskspaceManager();
+    }
+
+    public void setDiskManager(DiskspaceManager manager) {
+        this.diskManager = manager;
     }
 
     /**
@@ -356,11 +364,25 @@ public class OperationBusiness {
      * @throws BusinessException
      */
     public long getDataSize(String path) throws BusinessException {
-
         try {
             return operations.getDataSize(proxy, path);
         } catch (OperationException ex) {
             throw new BusinessException(ex);
+        }
+    }
+
+    /**
+     * This will check is there is enought of place on the grida server to transfer the file !
+     * @param pathFile (can be null if just want to check if there is enought of place, ex: folder creation)
+     * @throws BusinessException
+     */
+    public void isTransferPossible(String pathFile) throws BusinessException {
+        long freeSpace = diskManager.getFreeSpace();
+        long totalSpace = diskManager.getTotalSpace();
+        long fileSize = pathFile != null ? getDataSize(pathFile) : 0;
+
+        if (freeSpace - fileSize < totalSpace * diskManager.getMinAvailableDiskSpace()) {
+            throw new BusinessException("Unable to download " + pathFile + "' due to disk space limits. Size: " + ((int) fileSize / 1024 / 1024) + " MB.");
         }
     }
 

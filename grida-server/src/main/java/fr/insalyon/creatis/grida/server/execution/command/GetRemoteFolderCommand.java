@@ -65,6 +65,8 @@ public class GetRemoteFolderCommand extends Command {
     public void execute() {
 
         try {
+            operationBusiness.isTransferPossible(remoteDirPath);
+
             String destPath = operationBusiness.downloadFolder(
                     null, localDirPath, remoteDirPath, zipResult);
             communication.sendMessage(destPath);
