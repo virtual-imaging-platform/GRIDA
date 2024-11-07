@@ -55,18 +55,18 @@ public class OperationBusiness {
 
     private static final Logger logger =
         Logger.getLogger(OperationBusiness.class);
-    private Configuration configuration;
     private String proxy;
     private Operations operations;
     private DiskspaceManager diskManager;
 
-    public OperationBusiness() {}
+    public OperationBusiness(String proxy, DiskspaceManager manager, Operations operations) {
+        this.proxy = proxy;
+        this.diskManager = manager;
+        this.operations = operations;
+    }
 
     public OperationBusiness(String proxy) {
-        this.proxy = proxy;
-        configuration = Configuration.getInstance();
-        operations = configuration.getOperations();
-        diskManager = new DiskspaceManager();
+        this(proxy, new DiskspaceManager(), Configuration.getInstance().getOperations());
     }
 
     public void setDiskManager(DiskspaceManager manager) {

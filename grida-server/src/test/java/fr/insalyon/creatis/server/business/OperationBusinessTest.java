@@ -2,70 +2,78 @@ package fr.insalyon.creatis.server.business;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 
 import fr.insalyon.creatis.grida.server.business.BusinessException;
 import fr.insalyon.creatis.grida.server.business.DiskspaceManager;
 import fr.insalyon.creatis.grida.server.business.OperationBusiness;
+import fr.insalyon.creatis.grida.server.operation.Operations;
 
 public class OperationBusinessTest {
+
+    private OperationBusiness business;
 
     @Mock
     private DiskspaceManager manager;
 
-    @Spy
-    private OperationBusiness business;
+    @Mock
+    private Operations operations;
 
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
-        business.setDiskManager(manager);
+        business = new OperationBusiness("", manager, operations);
     }
 
     @Test
-    public void transferImpossibleLarge() throws BusinessException {
-        doReturn(Long.valueOf(101)).when(business).getDataSize("");
-        when(manager.getTotalSpace()).thenReturn(Long.valueOf(200));
-        when(manager.getFreeSpace()).thenReturn(Long.valueOf(100));
+    public void transferImpossibleLarge() throws Exception {
+        when(operations.getDataSize("","")).thenReturn(101L);
+        when(manager.getTotalSpace()).thenReturn(200L);
+        when(manager.getFreeSpace()).thenReturn(100L);
         when(manager.getMinAvailableDiskSpace()).thenReturn(Double.valueOf(0.1));
 
         assertThrows(BusinessException.class, () -> business.isTransferPossible(""));
+        verify(operations, times(1)).getDataSize("", "");
     }
 
     @Test
-    public void transferImpossibleSmall() throws BusinessException {
-        doReturn(Long.valueOf(1)).when(business).getDataSize("");
-        when(manager.getTotalSpace()).thenReturn(Long.valueOf(200));
-        when(manager.getFreeSpace()).thenReturn(Long.valueOf(20));
+    public void transferImpossibleSmall() throws Exception {
+        when(operations.getDataSize("","")).thenReturn(1L);
+        when(manager.getTotalSpace()).thenReturn(200L);
+        when(manager.getFreeSpace()).thenReturn(20L);
         when(manager.getMinAvailableDiskSpace()).thenReturn(Double.valueOf(0.1));
 
         assertThrows(BusinessException.class, () -> business.isTransferPossible(""));
+        verify(operations, times(1)).getDataSize("", "");
     }
 
     @Test
-    public void transferPossibleLarge() throws BusinessException {
-        doReturn(Long.valueOf(50)).when(business).getDataSize("");
-        when(manager.getTotalSpace()).thenReturn(Long.valueOf(200));
-        when(manager.getFreeSpace()).thenReturn(Long.valueOf(100));
+    public void transferPossibleLarge() throws Exception {
+        when(operations.getDataSize("","")).thenReturn(50L);
+
+        when(manager.getTotalSpace()).thenReturn(200L);
+        when(manager.getFreeSpace()).thenReturn(100L);
         when(manager.getMinAvailableDiskSpace()).thenReturn(Double.valueOf(0.1));
 
         assertDoesNotThrow(() -> business.isTransferPossible(""));
+        verify(operations, times(1)).getDataSize("", "");
     }
 
     @Test
-    public void transferPossibleSmall() throws BusinessException {
-        doReturn(Long.valueOf(1)).when(business).getDataSize("");
-        when(manager.getTotalSpace()).thenReturn(Long.valueOf(200));
-        when(manager.getFreeSpace()).thenReturn(Long.valueOf(102));
+    public void transferPossibleSmall() throws Exception {
+        when(operations.getDataSize("","")).thenReturn(1L);
+        when(manager.getTotalSpace()).thenReturn(200L);
+        when(manager.getFreeSpace()).thenReturn(102L);
         when(manager.getMinAvailableDiskSpace()).thenReturn(Double.valueOf(0.5));
 
         assertDoesNotThrow(() -> business.isTransferPossible(""));
+        verify(operations, times(1)).getDataSize("", "");
     }
 }
