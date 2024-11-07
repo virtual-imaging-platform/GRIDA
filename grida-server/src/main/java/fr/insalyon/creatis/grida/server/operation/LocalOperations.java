@@ -128,14 +128,7 @@ public class LocalOperations implements Operations {
             logger.error("Cannot copy file to " + dest, e);
             throw new OperationException(e);
         }
-        try {
-            Files.delete(Paths.get(localFilePath));
-        } catch (AccessDeniedException e) {
-            logger.warn("cannot delete uploaded file " + localFilePath + " : access denied");
-        } catch (IOException e) {
-            logger.error("Cannot copy file to " + dest, e);
-            throw new OperationException(e);
-        }
+        FileUtils.deleteQuietly(new File(localFilePath));
         return dest.toString();
     }
 
