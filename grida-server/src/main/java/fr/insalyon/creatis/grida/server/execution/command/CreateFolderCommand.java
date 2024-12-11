@@ -38,7 +38,6 @@ import fr.insalyon.creatis.grida.common.Communication;
 import fr.insalyon.creatis.grida.server.execution.Command;
 import fr.insalyon.creatis.grida.server.business.BusinessException;
 import fr.insalyon.creatis.grida.server.business.OperationBusiness;
-import org.apache.log4j.Logger;
 
 /**
  *
@@ -46,7 +45,6 @@ import org.apache.log4j.Logger;
  */
 public class CreateFolderCommand extends Command {
 
-    private static final Logger logger = Logger.getLogger(CreateFolderCommand.class);
     private String newDir;
     private OperationBusiness operationBusiness;
 
@@ -60,9 +58,7 @@ public class CreateFolderCommand extends Command {
 
     @Override
     public void execute() {
-        
         try {
-            operationBusiness.isTransferPossible(null);
 
             operationBusiness.createFolder(newDir);
             communication.sendSuccessMessage();

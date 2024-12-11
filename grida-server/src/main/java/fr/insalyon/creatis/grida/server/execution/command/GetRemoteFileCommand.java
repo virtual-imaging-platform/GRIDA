@@ -113,11 +113,10 @@ public class GetRemoteFileCommand extends Command {
      * @throws Exception
      */
     private String downloadFile(String fileName) throws BusinessException {
-        operationBusiness.isTransferPossible(remoteFilePath);
-
         String destPath = operationBusiness.downloadFile(null, localDirPath,
                 fileName, remoteFilePath);
         communication.sendMessage(destPath);
+
         return destPath;
     }
 }

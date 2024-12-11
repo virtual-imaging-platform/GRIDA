@@ -17,4 +17,11 @@ public class DiskspaceManager {
     public double getMinAvailableDiskSpace() {
         return Configuration.getInstance().getMinAvailableDiskSpace();
     }
+
+    public boolean isTransferable(long sizeToAdd) {
+        long freeSpace = getFreeSpace();
+        long totalSpace = getTotalSpace();
+
+        return freeSpace - sizeToAdd > totalSpace * getMinAvailableDiskSpace();
+    }
 }
