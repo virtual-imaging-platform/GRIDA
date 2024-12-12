@@ -2,6 +2,8 @@ package fr.insalyon.creatis.grida.server.operation;
 
 import fr.insalyon.creatis.grida.common.bean.GridData;
 import fr.insalyon.creatis.grida.common.bean.GridData.Type;
+import fr.insalyon.creatis.grida.server.business.DiskspaceManager;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
@@ -128,7 +130,7 @@ public class LocalOperations implements Operations {
             logger.error("Cannot copy file to " + dest, e);
             throw new OperationException(e);
         }
-        FileUtils.deleteQuietly(new File(localFilePath));
+        DiskspaceManager.deleteQuietly(new File(localFilePath));
         return dest.toString();
     }
 

@@ -240,7 +240,7 @@ public class PoolBusiness {
                     + FilenameUtils.getName(operation.getSource());
 
             logger.info("Deleting '" + name + "'.");
-            FileUtils.deleteQuietly(new File(name));
+            DiskspaceManager.deleteQuietly(new File(name));
 
             poolDAO.removeOperationBySourceAndType(operation.getSource(),
                     Operation.Type.Download);
@@ -248,7 +248,7 @@ public class PoolBusiness {
         } else if (operation.getType() == Operation.Type.Download_Files) {
 
             logger.info("Deleting '" + operation.getDest() + "'.");
-            FileUtils.deleteQuietly(new File(operation.getDest()));
+            DiskspaceManager.deleteQuietly(new File(operation.getDest()));
             poolDAO.removeOperationByDestAndType(operation.getDest(),
                     Operation.Type.Download_Files);
         }

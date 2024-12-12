@@ -32,6 +32,7 @@ package fr.insalyon.creatis.grida.server.operation;
 
 import fr.insalyon.creatis.grida.common.bean.GridData;
 import fr.insalyon.creatis.grida.server.Configuration;
+import fr.insalyon.creatis.grida.server.business.DiskspaceManager;
 import fr.insalyon.creatis.grida.server.execution.PoolProcessManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -229,7 +230,7 @@ public class DiracOperations implements Operations {
                 if (process.exitValue() != 0) {
                     logger.error(cout);
                     File file = new File(localDirPath + "/" + fileName);
-                    FileUtils.deleteQuietly(file);
+                    DiskspaceManager.deleteQuietly(file);
                     throw new OperationException(cout);
                 }
             }
@@ -289,7 +290,7 @@ public class DiracOperations implements Operations {
                     "Failed to perform upload from Dirac command.");
             }
 
-            FileUtils.deleteQuietly(new File(localFilePath));
+            DiskspaceManager.deleteQuietly(new File(localFilePath));
             return remoteFileName;
         } catch (InterruptedException | IOException ex) {
             logger.error(ex);
