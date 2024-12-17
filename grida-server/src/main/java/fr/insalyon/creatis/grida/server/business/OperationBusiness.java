@@ -116,7 +116,7 @@ public class OperationBusiness {
                 return destFile.getAbsolutePath();
 
             } else {
-                isTransferPossible(remoteFilePath);
+                transferPossible(remoteFilePath);
                 return operations.downloadFile(
                     operationID, proxy, localDirPath, fileName, remoteFilePath);
             }
@@ -137,7 +137,7 @@ public class OperationBusiness {
     public String downloadFolder(String operationID, String localDirPath,
             String remoteDirPath, boolean zipResult) throws BusinessException {
 
-        isTransferPossible(remoteDirPath);
+        transferPossible(remoteDirPath);
         try {
             File localDir = new File(localDirPath);
             localDir.mkdirs();
@@ -285,7 +285,7 @@ public class OperationBusiness {
      * @throws BusinessException
      */
     public void createFolder(String newFolder) throws BusinessException {
-        isTransferPossible(null);
+        transferPossible(null);
         try {
             operations.createFolder(proxy, newFolder);
         } catch (OperationException ex) {
@@ -338,7 +338,7 @@ public class OperationBusiness {
      * @param pathFile (can be null if just want to check if there is enought of place, ex: folder creation)
      * @throws BusinessException
      */
-    public void isTransferPossible(String pathFile) throws BusinessException {
+    public void transferPossible(String pathFile) throws BusinessException {
         long fileSize = pathFile != null ? getDataSize(pathFile) : 0;
 
         if ( ! diskManager.isTransferable(fileSize)) {

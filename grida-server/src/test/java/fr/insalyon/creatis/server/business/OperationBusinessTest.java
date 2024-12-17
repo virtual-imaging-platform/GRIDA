@@ -41,7 +41,7 @@ public class OperationBusinessTest {
         when(manager.getFreeSpace()).thenReturn(100L);
         doReturn(Double.valueOf(0.1)).when(manager).getMinAvailableDiskSpace();
 
-        assertThrows(BusinessException.class, () -> business.isTransferPossible(""));
+        assertThrows(BusinessException.class, () -> business.transferPossible(""));
         verify(operations, times(1)).getDataSize("", "");
     }
 
@@ -52,7 +52,7 @@ public class OperationBusinessTest {
         when(manager.getFreeSpace()).thenReturn(20L);
         doReturn(Double.valueOf(0.1)).when(manager).getMinAvailableDiskSpace();
 
-        assertThrows(BusinessException.class, () -> business.isTransferPossible(""));
+        assertThrows(BusinessException.class, () -> business.transferPossible(""));
         verify(operations, times(1)).getDataSize("", "");
     }
 
@@ -63,7 +63,7 @@ public class OperationBusinessTest {
         when(manager.getFreeSpace()).thenReturn(100L);
         doReturn(Double.valueOf(0.1)).when(manager).getMinAvailableDiskSpace();
 
-        assertDoesNotThrow(() -> business.isTransferPossible(""));
+        assertDoesNotThrow(() -> business.transferPossible(""));
         verify(operations, times(1)).getDataSize("", "");
     }
 
@@ -74,7 +74,7 @@ public class OperationBusinessTest {
         when(manager.getFreeSpace()).thenReturn(102L);
         doReturn(Double.valueOf(0.5)).when(manager).getMinAvailableDiskSpace();
 
-        assertDoesNotThrow(() -> business.isTransferPossible(""));
+        assertDoesNotThrow(() -> business.transferPossible(""));
         verify(operations, times(1)).getDataSize("", "");
     }
 }
