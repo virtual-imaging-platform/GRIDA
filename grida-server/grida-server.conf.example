@@ -1,0 +1,14 @@
+agent.port = 9006
+agent.retrycount = 5
+agent.min.available.diskspace = 0.1
+cache.list.max.entries = 30
+cache.list.max.hours = 12
+cache.files.max.size = 100.0
+cache.files.path = .cache
+pool.max.download = 10
+pool.max.upload = 10
+pool.max.delete = 5
+pool.max.replication = 5
+pool.max.history = 120
+commands.type = dirac
+dirac.bashrc = needed_if_commands.type_is_dirac

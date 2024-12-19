@@ -1,6 +1,5 @@
-## START MAVEN
-
 target/
+.flattened-pom.xml
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
@@ -9,16 +8,10 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
+grida-server.conf
 
-# Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 !/.mvn/wrapper/maven-wrapper.jar
-
-## END MAVEN
-
-## START Intellij
 
 .idea/
 *.iml
 *.iws
-
-## END Intellij

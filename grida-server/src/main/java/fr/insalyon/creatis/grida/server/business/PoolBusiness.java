@@ -57,9 +57,10 @@ public class PoolBusiness {
 
     private static final Logger logger = Logger.getLogger(PoolBusiness.class);
     private PoolDAO poolDAO;
+    private DiskspaceManager diskManager;
 
     public PoolBusiness() {
-
+        diskManager = new DiskspaceManager();
         poolDAO = DAOFactory.getDAOFactory().getPoolDAO();
     }
 
@@ -90,16 +91,12 @@ public class PoolBusiness {
             }
 
             String id = type + "-" + System.nanoTime();
-            Operation op = new Operation(id, source, dest, type, user,
-                    proxyFileName, size);
-            
-            long freeSpace = new File(".").getFreeSpace();
-            long totalSpace = new File(".").getTotalSpace();
-            if (freeSpace - size < totalSpace * Configuration.getInstance().getMinAvailableDiskSpace()) {
+            Operation op = new Operation(id, source, dest, type, user, proxyFileName, size);
+         
+            if (op.getType().equals(Type.Download_Files) || op.getType().equals(Type.Download)
+                && ! operationBusiness.isDownloadPossible(dest, FilenameUtils.getName(source), source, size)) {
                 op.setStatus(Operation.Status.Failed);
-                logger.error("Unable to download '" + source + "' due to disk space limits. Size: " + ((int) size / 1024 / 1024) + " MB.");
             }
-            
             poolDAO.addOperation(op);
 
             switch (op.getType()) {
@@ -246,7 +243,7 @@ public class PoolBusiness {
                     + FilenameUtils.getName(operation.getSource());
 
             logger.info("Deleting '" + name + "'.");
-            FileUtils.deleteQuietly(new File(name));
+            DiskspaceManager.deleteQuietly(new File(name));
 
             poolDAO.removeOperationBySourceAndType(operation.getSource(),
                     Operation.Type.Download);
@@ -254,7 +251,7 @@ public class PoolBusiness {
         } else if (operation.getType() == Operation.Type.Download_Files) {
 
             logger.info("Deleting '" + operation.getDest() + "'.");
-            FileUtils.deleteQuietly(new File(operation.getDest()));
+            DiskspaceManager.deleteQuietly(new File(operation.getDest()));
             poolDAO.removeOperationByDestAndType(operation.getDest(),
                     Operation.Type.Download_Files);
         }
