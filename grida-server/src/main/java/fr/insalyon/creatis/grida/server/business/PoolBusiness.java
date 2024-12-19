@@ -91,9 +91,12 @@ public class PoolBusiness {
             }
 
             String id = type + "-" + System.nanoTime();
-            Operation op = new Operation(id, source, dest, type, user,
-                    proxyFileName, size);
-            
+            Operation op = new Operation(id, source, dest, type, user, proxyFileName, size);
+         
+            if (op.getType().equals(Type.Download_Files) || op.getType().equals(Type.Download)
+                && ! operationBusiness.isDownloadPossible(dest, FilenameUtils.getName(source), source, size)) {
+                op.setStatus(Operation.Status.Failed);
+            }
             poolDAO.addOperation(op);
 
             switch (op.getType()) {

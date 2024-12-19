@@ -27,8 +27,12 @@ public class DiskspaceManager {
     public boolean isTransferable(long sizeToAdd) {
         long freeSpace = getFreeSpace();
         long totalSpace = getTotalSpace();
+        boolean result = freeSpace - sizeToAdd > totalSpace * getMinAvailableDiskSpace();
 
-        return freeSpace - sizeToAdd > totalSpace * getMinAvailableDiskSpace();
+        if ( ! result) {
+            logger.warn("Size limit reached, size needed : " + ((int) sizeToAdd / 1024 / 1024) + " MB.");
+        }
+        return result;
     }
 
     public static void deleteQuietly(File file) {

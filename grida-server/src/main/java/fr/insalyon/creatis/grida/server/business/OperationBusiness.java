@@ -104,21 +104,10 @@ public class OperationBusiness {
     public String downloadFile(String operationID, String localDirPath,
             String fileName, String remoteFilePath) throws BusinessException {
         try {
-            File localDir = new File(localDirPath);
-            localDir.mkdirs();
-
-            File destFile = new File(localDir.getAbsolutePath() + "/" + fileName);
-            long remoteModificationDate = getModificationDate(remoteFilePath);
-
-            if (destFile.exists() && remoteModificationDate <= destFile.lastModified()) {
-                logger.info("Avoiding download: file \"" + destFile.getAbsolutePath()
-                        + "\" is up to date.");
-                return destFile.getAbsolutePath();
-
+            if ( ! isDownloadPossible(localDirPath, fileName, remoteFilePath)) {
+                throw new BusinessException("Download impossible, there is not enough space on the disk!");
             } else {
-                transferPossible(remoteFilePath);
-                return operations.downloadFile(
-                    operationID, proxy, localDirPath, fileName, remoteFilePath);
+                return operations.downloadFile(operationID, proxy, localDirPath, fileName, remoteFilePath);
             }
         } catch (OperationException ex) {
             throw new BusinessException(ex);
@@ -333,19 +322,44 @@ public class OperationBusiness {
         }
     }
 
+
+    public boolean isDownloadPossible(String localDirPath, String fileName, String remoteFilePath) throws BusinessException {
+        return isDownloadPossible(localDirPath, fileName, remoteFilePath, null);
+    }
+
+    public boolean isDownloadPossible(String localDirPath, String fileName, String remoteFilePath, Double size) throws BusinessException {
+        File localDir = new File(localDirPath);
+        File destFile = new File(localDir.getAbsolutePath() + "/" + fileName);
+        long remoteModificationDate = getModificationDate(remoteFilePath);
+
+        if (destFile.exists() && remoteModificationDate <= destFile.lastModified()) {
+            logger.info("Avoiding download: file \"" + destFile.getAbsolutePath()
+                    + "\" is up to date.");
+            return true;
+        } else if (size != null) {
+            return diskManager.isTransferable(size.longValue());
+        } else {
+            return isTransferPossible(remoteFilePath);
+        }
+    }
+
+    public boolean isTransferPossible(String pathFile) throws BusinessException {
+        long fileSize = pathFile != null ? getDataSize(pathFile) : 0;
+
+        return diskManager.isTransferable(fileSize);
+    }
+
     /**
      * This will check is there is enought of place on the grida server to transfer the file !
      * @param pathFile (can be null if just want to check if there is enought of place, ex: folder creation)
      * @throws BusinessException
      */
     public void transferPossible(String pathFile) throws BusinessException {
-        long fileSize = pathFile != null ? getDataSize(pathFile) : 0;
-
-        if ( ! diskManager.isTransferable(fileSize)) {
+        if ( ! isTransferPossible(pathFile)) {
             if (pathFile == null) {
                 logger.warn("GRIDA Action authorized but the disk limit is reached !");
             } else {
-                throw new BusinessException("Unable to download " + pathFile + "' due to disk space limits. Size: " + ((int) fileSize / 1024 / 1024) + " MB.");
+                throw new BusinessException("Unable to download " + pathFile + "' due to disk space limits!");
             }
         }
     }
