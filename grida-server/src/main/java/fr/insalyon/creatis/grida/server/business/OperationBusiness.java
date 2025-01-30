@@ -107,6 +107,7 @@ public class OperationBusiness {
             if ( ! isDownloadPossible(localDirPath, fileName, remoteFilePath)) {
                 throw new BusinessException("Download impossible, there is not enough space on the disk!");
             } else {
+                new File(localDirPath).mkdirs();
                 return operations.downloadFile(operationID, proxy, localDirPath, fileName, remoteFilePath);
             }
         } catch (OperationException ex) {
