@@ -147,6 +147,7 @@ public class GRIDAClientMain {
             " getFile <remoteFile> <localDir>\n" +
             " getFolder <remoteDir> <localDir> <1 to zip it, or else 0>\n" +
             " list <dir> <1 if refresh, or else 0>\n" +
+            " getPathInfo <pathname>\n" +
             " getModDate <filename>\n" +
             " upload <localFile> <remoteDir>\n" +
             " uploadToSes <localFile> <remoteDir> <storageElement>\n" +
@@ -202,6 +203,9 @@ public class GRIDAClientMain {
             result = list(client, firstArg, refresh, false);
         }
         break;
+        case "getpathinfo":
+            result = client.getPathInfo(firstArg).name(); // XXX ?
+            break;
         case "getmoddate":
             result = Long.toString(client.getModificationDate(firstArg));
             break;

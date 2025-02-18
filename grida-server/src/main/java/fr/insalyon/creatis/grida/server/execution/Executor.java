@@ -101,6 +101,9 @@ public class Executor extends Thread {
                 case ExecutorConstants.COM_LIST_FILES_AND_FOLDERS:
                     return new ListFilesAndFoldersCommand(communication, proxy, tokens[2], tokens[3]);
 
+                case ExecutorConstants.COM_GET_PATH_INFO:
+                    return new GetPathInfoCommand(communication, proxy, tokens[2].split(Constants.MSG_SEP_2));
+
                 case ExecutorConstants.COM_GET_MODIFICATION_DATE:
                     return new GetModificationDateCommand(communication, proxy, tokens[2].split(Constants.MSG_SEP_2));
 

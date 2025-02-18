@@ -81,6 +81,14 @@ public class OperationBusiness {
         }
     }
 
+    public GridData.Type getPathInfo(String path) throws BusinessException {
+        try {
+            return operations.getPathInfo(proxy, path);
+        } catch (OperationException ex) {
+            throw new BusinessException(ex);
+        }
+    }
+
     public List<GridData> listFilesAndFolders(String path)
         throws BusinessException {
 

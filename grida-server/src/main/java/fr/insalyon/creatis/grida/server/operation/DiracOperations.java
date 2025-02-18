@@ -89,6 +89,32 @@ public class DiracOperations implements Operations {
     }
 
     @Override
+    public GridData.Type getPathInfo(String proxy, String path) throws OperationException {
+        logger.info("[dirac] Getting path info for: " + path);
+        List<String> output = executeCommand(
+                proxy,
+                "Unable to get path info for " + path,
+                "dirac-dms-lfn-metadata " + path +
+                        " | grep -e \\'DirID\\' -e \\'FileID\\' | head -n1 | sed 's/^ *//'");
+        if (output.isEmpty()) {
+            String error =
+                    "[dirac] Cannot get path info for '" + path + "' because it does not exist";
+            logger.error(error);
+            throw new OperationException(error);
+        }
+        String result = output.get(0);
+        if (result == "'DirID':") {
+            return GridData.Type.Folder;
+        } else if (result == "'FileID':") {
+            return GridData.Type.File;
+        } else {
+            String error = "[dirac] Cannot get path info for '" + path + "': unknown type";
+            logger.error(error);
+            throw new OperationException(error);
+        }
+    }
+
+    @Override
     public List<GridData> listFilesAndFolders(String proxy, String path) throws OperationException {
 
         logger.info("[dirac] Listing contents of: " + path);

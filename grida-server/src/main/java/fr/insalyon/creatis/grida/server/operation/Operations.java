@@ -42,6 +42,11 @@ public interface Operations {
         throws OperationException;
 
     /**
+     * @return the path type (file or folder)
+     */
+    GridData.Type getPathInfo(String proxy, String path) throws OperationException;
+
+    /**
      * @return if path is a folder, the list of GridData about the files/folder
      * of this folder. If path is a file, it returns a list with a single
      * GridData about this file. If path does not exist, returns an empty list

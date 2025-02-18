@@ -172,6 +172,57 @@ public class GRIDAClient extends AbstractGRIDAClient {
     }
 
     /**
+     * Gets path information for the provided path.
+     *
+     * @param pathName Path to resolve
+     * @return File or directory type
+     * @throws GRIDAClientException
+     */
+    public GridData.Type getPathInfo(String pathName) throws GRIDAClientException {
+        List<String> pathsList = new ArrayList<String>();
+        pathsList.add(pathName);
+        return getPathInfo(pathsList).get(0);
+    }
+
+    /**
+     * Gets path information for the list of paths provided.
+     *
+     * @param pathsList List of paths to resolve
+     * @return List of file or directory type respectively to the list of files
+     * @throws GRIDAClientException
+     */
+    public List<GridData.Type> getPathInfo(List<String> pathsList) throws GRIDAClientException {
+        try {
+            Communication communication = getCommunication();
+
+            StringBuilder sb = new StringBuilder();
+            for (String fileName : pathsList) {
+                if (!sb.toString().isEmpty()) {
+                    sb.append(Constants.MSG_SEP_2);
+                }
+                sb.append(Util.removeLfnFromPath(fileName));
+            }
+            communication.sendMessage(
+                    ExecutorConstants.COM_GET_PATH_INFO + Constants.MSG_SEP_1
+                            + proxyPath + Constants.MSG_SEP_1 + sb.toString());
+            communication.sendEndOfMessage();
+
+            String types = communication.getMessage();
+            communication.close();
+
+            List<GridData.Type> typesList = new ArrayList<GridData.Type>();
+            for (String type : types.split(Constants.MSG_SEP_1)) {
+                typesList.add(GridData.Type.valueOf(type));
+            }
+
+            return typesList;
+
+        } catch (IOException ex) {
+            throw new GRIDAClientException(ex);
+        }
+    }
+
+    /**
      * Gets the modification date of the provided file.
      * 
      * @param fileName File name to get the modification date

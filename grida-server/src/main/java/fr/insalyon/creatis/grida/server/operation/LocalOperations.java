@@ -38,6 +38,20 @@ public class LocalOperations implements Operations {
     }
 
     @Override
+    public GridData.Type getPathInfo(String proxy, String path) throws OperationException {
+        File file = new File(path);
+        if (!file.exists()) {
+            throw new OperationException("Path " + path + " does not exist");
+        } else if (file.isDirectory()) {
+            return GridData.Type.Folder;
+        } else if (file.isFile()) {
+            return GridData.Type.File;
+        } else { // special file (socket, device, ...)
+            throw new OperationException("Path " + path + " is neither a regular file nor a directory");
+        }
+    }
+
+    @Override
     public List<GridData> listFilesAndFolders(String proxy, String path) throws OperationException {
         if ( ! exists(proxy, path)) {
             return Collections.emptyList();
