@@ -38,6 +38,8 @@ import fr.insalyon.creatis.grida.common.Communication;
 import fr.insalyon.creatis.grida.common.Constants;
 import fr.insalyon.creatis.grida.common.ExecutorConstants;
 import fr.insalyon.creatis.grida.common.bean.GridData;
+import fr.insalyon.creatis.grida.common.bean.GridPathInfo;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -175,10 +177,10 @@ public class GRIDAClient extends AbstractGRIDAClient {
      * Gets path information for the provided path.
      *
      * @param pathName Path to resolve
-     * @return File or directory type
+     * @return Whether the path exists, and is a folder or a file
      * @throws GRIDAClientException
      */
-    public GridData.Type getPathInfo(String pathName) throws GRIDAClientException {
+    public GridPathInfo getPathInfo(String pathName) throws GRIDAClientException {
         List<String> pathsList = new ArrayList<String>();
         pathsList.add(pathName);
         return getPathInfo(pathsList).get(0);
@@ -191,7 +193,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
      * @return List of file or directory type respectively to the list of files
      * @throws GRIDAClientException
      */
-    public List<GridData.Type> getPathInfo(List<String> pathsList) throws GRIDAClientException {
+    public List<GridPathInfo> getPathInfo(List<String> pathsList) throws GRIDAClientException {
         try {
             Communication communication = getCommunication();
 
@@ -207,15 +209,16 @@ public class GRIDAClient extends AbstractGRIDAClient {
                             + proxyPath + Constants.MSG_SEP_1 + sb.toString());
             communication.sendEndOfMessage();
 
-            String types = communication.getMessage();
+            String response = communication.getMessage();
             communication.close();
 
-            List<GridData.Type> typesList = new ArrayList<GridData.Type>();
-            for (String type : types.split(Constants.MSG_SEP_1)) {
-                typesList.add(GridData.Type.valueOf(type));
+            List<GridPathInfo> pathInfos = new ArrayList<GridPathInfo>();
+            for (String data : response.split(Constants.MSG_SEP_1)) {
+                String[] d = data.split(Constants.MSG_SEP_2);
+                pathInfos.add(new GridPathInfo(Boolean.valueOf(d[0]), GridData.Type.valueOf(d[1])));
             }
 
-            return typesList;
+            return pathInfos;
 
         } catch (IOException ex) {
             throw new GRIDAClientException(ex);

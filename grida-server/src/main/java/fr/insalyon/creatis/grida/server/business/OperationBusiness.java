@@ -36,6 +36,7 @@ package fr.insalyon.creatis.grida.server.business;
 
 import fr.insalyon.creatis.devtools.zip.FolderZipper;
 import fr.insalyon.creatis.grida.common.bean.GridData;
+import fr.insalyon.creatis.grida.common.bean.GridPathInfo;
 import fr.insalyon.creatis.grida.server.Configuration;
 import fr.insalyon.creatis.grida.server.operation.Operations;
 import fr.insalyon.creatis.grida.server.operation.OperationException;
@@ -81,7 +82,7 @@ public class OperationBusiness {
         }
     }
 
-    public GridData.Type getPathInfo(String path) throws BusinessException {
+    public GridPathInfo getPathInfo(String path) throws BusinessException {
         try {
             return operations.getPathInfo(proxy, path);
         } catch (OperationException ex) {

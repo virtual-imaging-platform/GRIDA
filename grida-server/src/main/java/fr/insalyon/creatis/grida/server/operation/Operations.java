@@ -31,6 +31,8 @@
 package fr.insalyon.creatis.grida.server.operation;
 
 import fr.insalyon.creatis.grida.common.bean.GridData;
+import fr.insalyon.creatis.grida.common.bean.GridPathInfo;
+
 import java.util.List;
 
 public interface Operations {
@@ -42,9 +44,9 @@ public interface Operations {
         throws OperationException;
 
     /**
-     * @return the path type (file or folder)
+     * @return the path info (existence and folder or file type)
      */
-    GridData.Type getPathInfo(String proxy, String path) throws OperationException;
+    GridPathInfo getPathInfo(String proxy, String path) throws OperationException;
 
     /**
      * @return if path is a folder, the list of GridData about the files/folder

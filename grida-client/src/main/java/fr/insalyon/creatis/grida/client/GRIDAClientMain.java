@@ -32,8 +32,11 @@ package fr.insalyon.creatis.grida.client;
 
 import fr.insalyon.creatis.grida.common.bean.CachedFile;
 import fr.insalyon.creatis.grida.common.bean.GridData;
+import fr.insalyon.creatis.grida.common.bean.GridPathInfo;
 import fr.insalyon.creatis.grida.common.bean.Operation;
 import fr.insalyon.creatis.grida.common.bean.ZombieFile;
+
+
 import java.io.File;
 import java.text.DateFormat;
 import java.util.Arrays;
@@ -204,7 +207,8 @@ public class GRIDAClientMain {
         }
         break;
         case "getpathinfo":
-            result = client.getPathInfo(firstArg).name(); // XXX ?
+            GridPathInfo pathInfo = client.getPathInfo(firstArg);
+            result = pathInfo.exist() ? pathInfo.getType().name() : "Not found.";
             break;
         case "getmoddate":
             result = Long.toString(client.getModificationDate(firstArg));
@@ -356,6 +360,7 @@ public class GRIDAClientMain {
             "getfile",
             "getfolder",
             "list",
+            "getpathinfo",
             "getmoddate",
             "upload",
             "uploadtoses",
@@ -383,6 +388,7 @@ public class GRIDAClientMain {
             2, // "getfile",
             3, // "getfolder",
             2, // "list",
+            1, // "getpathinfo",
             1, // "getmoddate",
             2, // "upload",
             3, // "uploadtoses",

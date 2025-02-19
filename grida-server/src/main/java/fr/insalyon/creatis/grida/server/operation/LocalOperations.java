@@ -2,6 +2,7 @@ package fr.insalyon.creatis.grida.server.operation;
 
 import fr.insalyon.creatis.grida.common.bean.GridData;
 import fr.insalyon.creatis.grida.common.bean.GridData.Type;
+import fr.insalyon.creatis.grida.common.bean.GridPathInfo;
 import fr.insalyon.creatis.grida.server.business.DiskspaceManager;
 
 import org.apache.commons.io.FileUtils;
@@ -38,17 +39,18 @@ public class LocalOperations implements Operations {
     }
 
     @Override
-    public GridData.Type getPathInfo(String proxy, String path) throws OperationException {
+    public GridPathInfo getPathInfo(String proxy, String path) throws OperationException {
         File file = new File(path);
-        if (!file.exists()) {
-            throw new OperationException("Path " + path + " does not exist");
-        } else if (file.isDirectory()) {
-            return GridData.Type.Folder;
-        } else if (file.isFile()) {
-            return GridData.Type.File;
-        } else { // special file (socket, device, ...)
-            throw new OperationException("Path " + path + " is neither a regular file nor a directory");
+        boolean exist = file.exists();
+        GridData.Type type;
+        if (file.isDirectory()) {
+            type = GridData.Type.Folder;
+        } else {
+            // file.isFile() may still be false here, for non-regular files such as device or socket.
+            // we still report "File" type anyway, as these special files do not matter to VIP.
+            type = GridData.Type.File;
         }
+        return new GridPathInfo(exist, type);
     }
 
     @Override
