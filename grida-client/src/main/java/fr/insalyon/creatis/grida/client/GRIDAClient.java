@@ -215,7 +215,9 @@ public class GRIDAClient extends AbstractGRIDAClient {
             List<GridPathInfo> pathInfos = new ArrayList<GridPathInfo>();
             for (String data : response.split(Constants.MSG_SEP_1)) {
                 String[] d = data.split(Constants.MSG_SEP_2);
-                pathInfos.add(new GridPathInfo(Boolean.valueOf(d[0]), GridData.Type.valueOf(d[1])));
+                boolean exist = Boolean.valueOf(d[0]);
+                GridData.Type type = exist ? GridData.Type.valueOf(d[1]) : null;
+                pathInfos.add(new GridPathInfo(exist, type));
             }
 
             return pathInfos;

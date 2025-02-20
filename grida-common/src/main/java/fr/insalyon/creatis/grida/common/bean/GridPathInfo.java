@@ -2,7 +2,7 @@ package fr.insalyon.creatis.grida.common.bean;
 
 public class GridPathInfo {
     private boolean doesExist;
-    private GridData.Type type;
+    private GridData.Type type; // type is undefined and can be null when doesExist is false
 
     public GridPathInfo(boolean exist, GridData.Type type) {
         this.doesExist = exist;

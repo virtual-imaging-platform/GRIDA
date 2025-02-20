@@ -42,13 +42,15 @@ public class LocalOperations implements Operations {
     public GridPathInfo getPathInfo(String proxy, String path) throws OperationException {
         File file = new File(path);
         boolean exist = file.exists();
-        GridData.Type type;
-        if (file.isDirectory()) {
-            type = GridData.Type.Folder;
-        } else {
-            // file.isFile() may still be false here, for non-regular files such as device or socket.
-            // we still report "File" type anyway, as these special files do not matter to VIP.
-            type = GridData.Type.File;
+        GridData.Type type = null;
+        if (exist) {
+            if (file.isDirectory()) {
+                type = GridData.Type.Folder;
+            } else {
+                // file.isFile() may still be false here, for non-regular files such as device or socket.
+                // we still report "File" type anyway, as these special files do not matter to VIP.
+                type = GridData.Type.File;
+            }
         }
         return new GridPathInfo(exist, type);
     }

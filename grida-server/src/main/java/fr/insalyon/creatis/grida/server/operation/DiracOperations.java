@@ -99,21 +99,21 @@ public class DiracOperations implements Operations {
                 "dirac-dms-lfn-metadata " + path +
                         " | grep -e \\'DirID\\' -e \\'FileID\\' | sed 's/^ *//'");
         boolean exist;
-        GridData.Type type;
+        GridData.Type type = null;
         if (output.isEmpty()) {
             exist = false;
         } else {
             exist = true;
-        }
-        String result = output.get(0);
-        if (result == "'DirID':") {
-            type = GridData.Type.Folder;
-        } else if (result == "'FileID':") {
-            type = GridData.Type.File;
-        } else {
-            String error = "[dirac] Cannot get path info for '" + path + "': unknown type";
-            logger.error(error);
-            throw new OperationException(error);
+            String result = output.get(0);
+            if (result.startsWith("'DirID':")) {
+                type = GridData.Type.Folder;
+            } else if (result.startsWith("'FileID':")) {
+                type = GridData.Type.File;
+            } else {
+                String error = "[dirac] Cannot get path info for '" + path + "': unknown type";
+                logger.error(error);
+                throw new OperationException(error);
+            }
         }
         return new GridPathInfo(exist, type);
     }
