@@ -35,8 +35,6 @@ import fr.insalyon.creatis.grida.common.bean.GridData;
 import fr.insalyon.creatis.grida.common.bean.GridPathInfo;
 import fr.insalyon.creatis.grida.common.bean.Operation;
 import fr.insalyon.creatis.grida.common.bean.ZombieFile;
-
-
 import java.io.File;
 import java.text.DateFormat;
 import java.util.Arrays;

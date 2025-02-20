@@ -39,7 +39,6 @@ import fr.insalyon.creatis.grida.common.Constants;
 import fr.insalyon.creatis.grida.common.ExecutorConstants;
 import fr.insalyon.creatis.grida.common.bean.GridData;
 import fr.insalyon.creatis.grida.common.bean.GridPathInfo;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
