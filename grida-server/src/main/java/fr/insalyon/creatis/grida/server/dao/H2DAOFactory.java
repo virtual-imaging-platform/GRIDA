@@ -34,6 +34,7 @@
  */
 package fr.insalyon.creatis.grida.server.dao;
 
+import fr.insalyon.creatis.grida.server.Configuration;
 import fr.insalyon.creatis.grida.server.dao.h2.CacheFileData;
 import fr.insalyon.creatis.grida.server.dao.h2.CacheListData;
 import fr.insalyon.creatis.grida.server.dao.h2.PoolData;
@@ -57,7 +58,7 @@ public class H2DAOFactory extends DAOFactory {
     private Connection connection;
 
     public static H2DAOFactory getInstance() {
-        if (instance == null) {
+        if (Configuration.getInstance().getFeatures().hasPool && instance == null) {
             instance = new H2DAOFactory();
         }
         return instance;

@@ -37,6 +37,7 @@ package fr.insalyon.creatis.grida.server.execution.command;
 import fr.insalyon.creatis.grida.common.Communication;
 import fr.insalyon.creatis.grida.common.Constants;
 import fr.insalyon.creatis.grida.common.bean.GridData;
+import fr.insalyon.creatis.grida.server.Configuration;
 import fr.insalyon.creatis.grida.server.business.BusinessException;
 import fr.insalyon.creatis.grida.server.business.CacheBusiness;
 import fr.insalyon.creatis.grida.server.business.OperationBusiness;
@@ -65,7 +66,7 @@ public class ListFilesAndFoldersCommand extends Command {
         this.refresh = Boolean.valueOf(refresh);
         
         operationBusiness = new OperationBusiness(proxyFileName);
-        cacheBusiness = new CacheBusiness();
+        cacheBusiness = Configuration.getInstance().getFeatures().hasCache ? new CacheBusiness() : null;
     }
 
     @Override
@@ -76,7 +77,7 @@ public class ListFilesAndFoldersCommand extends Command {
                 getDataList();
 
             } else {
-                if (cacheBusiness.hasValidCacheData(path)) {
+                if (cacheBusiness != null && cacheBusiness.hasValidCacheData(path)) {
                     logger.info("Listing Files and Folders from cache: " + path);
                     for (String data : cacheBusiness.getCachedPaths(path)) {
                         communication.sendMessage(data);
@@ -117,6 +118,8 @@ public class ListFilesAndFoldersCommand extends Command {
             communication.sendMessage(dataPath);
             dataList.add(dataPath);
         }
-        cacheBusiness.addPathToCache(path, dataList);
+        if (cacheBusiness != null) {
+            cacheBusiness.addPathToCache(path, dataList);
+        }
     }
 }

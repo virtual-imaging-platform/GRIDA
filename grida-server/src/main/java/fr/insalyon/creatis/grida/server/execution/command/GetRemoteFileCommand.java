@@ -35,6 +35,7 @@
 package fr.insalyon.creatis.grida.server.execution.command;
 
 import fr.insalyon.creatis.grida.common.Communication;
+import fr.insalyon.creatis.grida.server.Configuration;
 import fr.insalyon.creatis.grida.server.business.BusinessException;
 import fr.insalyon.creatis.grida.server.business.CacheBusiness;
 import fr.insalyon.creatis.grida.server.business.OperationBusiness;
@@ -70,14 +71,19 @@ public class GetRemoteFileCommand extends Command {
     public void execute() {
 
         try {
-            CacheBusiness cacheBusiness = new CacheBusiness();
-            String cachedFileName = cacheBusiness.getCachedFileName(remoteFilePath);
+            CacheBusiness cacheBusiness = null;
+            String cachedFileName = null;
+            if (Configuration.getInstance().getFeatures().hasCache) {
+                cacheBusiness = new CacheBusiness();
+                cachedFileName = cacheBusiness.getCachedFileName(remoteFilePath);
+            }
             String fileName = FilenameUtils.getName(remoteFilePath);
 
             if (cachedFileName == null) {
                 String destPath = downloadFile(fileName);
-                cacheBusiness.addFileToCache(cachedFileName, destPath, remoteFilePath);
-
+                if (cacheBusiness != null) {
+                    cacheBusiness.addFileToCache(cachedFileName, destPath, remoteFilePath);
+                }
             } else {
                 long remoteFileTime = -1;
                 long cachedFileTime = new File(cachedFileName).lastModified();
