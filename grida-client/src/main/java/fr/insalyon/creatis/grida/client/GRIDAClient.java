@@ -38,6 +38,7 @@ import fr.insalyon.creatis.grida.common.Communication;
 import fr.insalyon.creatis.grida.common.Constants;
 import fr.insalyon.creatis.grida.common.ExecutorConstants;
 import fr.insalyon.creatis.grida.common.bean.GridData;
+import fr.insalyon.creatis.grida.common.bean.GridPathInfo;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -166,6 +167,60 @@ public class GRIDAClient extends AbstractGRIDAClient {
 
         } catch (ArrayIndexOutOfBoundsException ex) {
             throw new GRIDAClientException("Wrong number of parameters from server response.");
+        } catch (IOException ex) {
+            throw new GRIDAClientException(ex);
+        }
+    }
+
+    /**
+     * Gets path information for the provided path.
+     *
+     * @param pathName Path to resolve
+     * @return Whether the path exists, and is a folder or a file
+     * @throws GRIDAClientException
+     */
+    public GridPathInfo getPathInfo(String pathName) throws GRIDAClientException {
+        List<String> pathsList = new ArrayList<String>();
+        pathsList.add(pathName);
+        return getPathInfo(pathsList).get(0);
+    }
+
+    /**
+     * Gets path information for the list of paths provided.
+     *
+     * @param pathsList List of paths to resolve
+     * @return List of file or directory type respectively to the list of files
+     * @throws GRIDAClientException
+     */
+    public List<GridPathInfo> getPathInfo(List<String> pathsList) throws GRIDAClientException {
+        try {
+            Communication communication = getCommunication();
+
+            StringBuilder sb = new StringBuilder();
+            for (String fileName : pathsList) {
+                if (!sb.toString().isEmpty()) {
+                    sb.append(Constants.MSG_SEP_2);
+                }
+                sb.append(Util.removeLfnFromPath(fileName));
+            }
+            communication.sendMessage(
+                    ExecutorConstants.COM_GET_PATH_INFO + Constants.MSG_SEP_1
+                            + proxyPath + Constants.MSG_SEP_1 + sb.toString());
+            communication.sendEndOfMessage();
+
+            String response = communication.getMessage();
+            communication.close();
+
+            List<GridPathInfo> pathInfos = new ArrayList<GridPathInfo>();
+            for (String data : response.split(Constants.MSG_SEP_1)) {
+                String[] d = data.split(Constants.MSG_SEP_2);
+                boolean exist = Boolean.valueOf(d[0]);
+                GridData.Type type = exist ? GridData.Type.valueOf(d[1]) : null;
+                pathInfos.add(new GridPathInfo(exist, type));
+            }
+
+            return pathInfos;
+
         } catch (IOException ex) {
             throw new GRIDAClientException(ex);
         }

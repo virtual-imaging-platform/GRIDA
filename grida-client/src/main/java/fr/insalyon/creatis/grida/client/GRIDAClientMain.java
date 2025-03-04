@@ -32,6 +32,7 @@ package fr.insalyon.creatis.grida.client;
 
 import fr.insalyon.creatis.grida.common.bean.CachedFile;
 import fr.insalyon.creatis.grida.common.bean.GridData;
+import fr.insalyon.creatis.grida.common.bean.GridPathInfo;
 import fr.insalyon.creatis.grida.common.bean.Operation;
 import fr.insalyon.creatis.grida.common.bean.ZombieFile;
 import java.io.File;
@@ -147,6 +148,7 @@ public class GRIDAClientMain {
             " getFile <remoteFile> <localDir>\n" +
             " getFolder <remoteDir> <localDir> <1 to zip it, or else 0>\n" +
             " list <dir> <1 if refresh, or else 0>\n" +
+            " getPathInfo <pathname>\n" +
             " getModDate <filename>\n" +
             " upload <localFile> <remoteDir>\n" +
             " uploadToSes <localFile> <remoteDir> <storageElement>\n" +
@@ -202,6 +204,10 @@ public class GRIDAClientMain {
             result = list(client, firstArg, refresh, false);
         }
         break;
+        case "getpathinfo":
+            GridPathInfo pathInfo = client.getPathInfo(firstArg);
+            result = pathInfo.exist() ? pathInfo.getType().name() : "Not found.";
+            break;
         case "getmoddate":
             result = Long.toString(client.getModificationDate(firstArg));
             break;
@@ -352,6 +358,7 @@ public class GRIDAClientMain {
             "getfile",
             "getfolder",
             "list",
+            "getpathinfo",
             "getmoddate",
             "upload",
             "uploadtoses",
@@ -379,6 +386,7 @@ public class GRIDAClientMain {
             2, // "getfile",
             3, // "getfolder",
             2, // "list",
+            1, // "getpathinfo",
             1, // "getmoddate",
             2, // "upload",
             3, // "uploadtoses",
