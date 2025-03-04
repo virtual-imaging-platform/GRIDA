@@ -76,7 +76,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
             communication.sendMessage(
                     ExecutorConstants.COM_GET_REMOTE_FILE + Constants.MSG_SEP_1
                     + proxyPath + Constants.MSG_SEP_1
-                    + Util.removeLfnFromPath(remoteFile) + Constants.MSG_SEP_1
+                    + Util.getPath(remoteFile) + Constants.MSG_SEP_1
                     + localDir);
             communication.sendEndOfMessage();
 
@@ -111,7 +111,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
             communication.sendMessage(
                     ExecutorConstants.COM_GET_REMOTE_FOLDER + Constants.MSG_SEP_1
                     + proxyPath + Constants.MSG_SEP_1
-                    + Util.removeLfnFromPath(remoteDir) + Constants.MSG_SEP_1
+                    + Util.getPath(remoteDir) + Constants.MSG_SEP_1
                     + localDir + Constants.MSG_SEP_1 + zipResult.toString());
             communication.sendEndOfMessage();
 
@@ -140,7 +140,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
             communication.sendMessage(
                     ExecutorConstants.COM_LIST_FILES_AND_FOLDERS + Constants.MSG_SEP_1
                     + proxyPath + Constants.MSG_SEP_1
-                    + Util.removeLfnFromPath(dir) + Constants.MSG_SEP_1
+                    + Util.getPath(dir) + Constants.MSG_SEP_1
                     + refresh);
             communication.sendEndOfMessage();
 
@@ -201,7 +201,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
                 if (!sb.toString().isEmpty()) {
                     sb.append(Constants.MSG_SEP_2);
                 }
-                sb.append(Util.removeLfnFromPath(fileName));
+                sb.append(Util.getPath(fileName));
             }
             communication.sendMessage(
                     ExecutorConstants.COM_GET_PATH_INFO + Constants.MSG_SEP_1
@@ -258,7 +258,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
                 if (!sb.toString().isEmpty()) {
                     sb.append(Constants.MSG_SEP_2);
                 }
-                sb.append(Util.removeLfnFromPath(fileName));
+                sb.append(Util.getPath(fileName));
             }
             communication.sendMessage(
                     ExecutorConstants.COM_GET_MODIFICATION_DATE + Constants.MSG_SEP_1
@@ -296,7 +296,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
                     ExecutorConstants.COM_UPLOAD_FILE + Constants.MSG_SEP_1
                     + proxyPath + Constants.MSG_SEP_1
                     + localFile + Constants.MSG_SEP_1
-                    + Util.removeLfnFromPath(remoteDir));
+                    + Util.getPath(remoteDir));
             communication.sendEndOfMessage();
 
             String localFilePath = communication.getMessage();
@@ -354,7 +354,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
                     ExecutorConstants.COM_UPLOAD_FILE_TO_SES + Constants.MSG_SEP_1
                     + proxyPath + Constants.MSG_SEP_1
                     + localFile + Constants.MSG_SEP_1
-                    + Util.removeLfnFromPath(remoteDir) + Constants.MSG_SEP_1
+                    + Util.getPath(remoteDir) + Constants.MSG_SEP_1
                     + storageElements.toString());
             communication.sendEndOfMessage();
 
@@ -381,7 +381,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
             communication.sendMessage(
                     ExecutorConstants.COM_REPLICATE_PREFERRED_SES + Constants.MSG_SEP_1
                     + proxyPath + Constants.MSG_SEP_1
-                    + Util.removeLfnFromPath(remoteFile));
+                    + Util.getPath(remoteFile));
             communication.sendEndOfMessage();
 
             communication.getMessage();
@@ -420,7 +420,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
                 if (files.length() > 0) {
                     files.append(Constants.MSG_SEP_2);
                 }
-                files.append(Util.removeLfnFromPath(file));
+                files.append(Util.getPath(file));
             }
             Communication communication = getCommunication();
             communication.sendMessage(
@@ -451,7 +451,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
             communication.sendMessage(
                     ExecutorConstants.COM_CREATE_FOLDER + Constants.MSG_SEP_1
                     + proxyPath + Constants.MSG_SEP_1
-                    + Util.removeLfnFromPath(path + "/" + folderName));
+                    + Util.getPath(path + "/" + folderName));
             communication.sendEndOfMessage();
 
             communication.getMessage();
@@ -476,7 +476,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
             communication.sendMessage(
                     ExecutorConstants.COM_RENAME + Constants.MSG_SEP_1
                     + proxyPath + Constants.MSG_SEP_1
-                    + Util.removeLfnFromPath(oldPath) + Constants.MSG_SEP_1
+                    + Util.getPath(oldPath) + Constants.MSG_SEP_1
                     + newPath);
             communication.sendEndOfMessage();
 
@@ -502,7 +502,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
             communication.sendMessage(
                     ExecutorConstants.COM_EXIST + Constants.MSG_SEP_1
                     + proxyPath + Constants.MSG_SEP_1
-                    + Util.removeLfnFromPath(remotePath));
+                    + Util.getPath(remotePath));
             communication.sendEndOfMessage();
 
             boolean exist = Boolean.valueOf(communication.getMessage());
@@ -521,7 +521,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
             communication.sendMessage(
                     ExecutorConstants.COM_SET_COMMENT + Constants.MSG_SEP_1
                     + proxyPath + Constants.MSG_SEP_1
-                    + Util.removeLfnFromPath(lfn) + Constants.MSG_SEP_1
+                    + Util.getPath(lfn) + Constants.MSG_SEP_1
                     + rev);
             communication.sendEndOfMessage();
             communication.getMessage();
