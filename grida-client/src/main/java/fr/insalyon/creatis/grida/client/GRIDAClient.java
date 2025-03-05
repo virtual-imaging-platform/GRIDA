@@ -41,6 +41,7 @@ import fr.insalyon.creatis.grida.common.bean.GridData;
 import fr.insalyon.creatis.grida.common.bean.GridPathInfo;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -180,8 +181,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
      * @throws GRIDAClientException
      */
     public GridPathInfo getPathInfo(String pathName) throws GRIDAClientException {
-        List<String> pathsList = new ArrayList<String>();
-        pathsList.add(pathName);
+        List<String> pathsList = Arrays.asList(pathName);
         return getPathInfo(pathsList).get(0);
     }
 
@@ -211,7 +211,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
             String response = communication.getMessage();
             communication.close();
 
-            List<GridPathInfo> pathInfos = new ArrayList<GridPathInfo>();
+            List<GridPathInfo> pathInfos = new ArrayList<>();
             for (String data : response.split(Constants.MSG_SEP_1)) {
                 String[] d = data.split(Constants.MSG_SEP_2);
                 boolean exist = Boolean.valueOf(d[0]);
