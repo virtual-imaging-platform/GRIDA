@@ -2,6 +2,7 @@ package fr.insalyon.creatis.grida.server.operation;
 
 import fr.insalyon.creatis.grida.common.bean.GridData;
 import fr.insalyon.creatis.grida.common.bean.GridData.Type;
+import fr.insalyon.creatis.grida.common.bean.GridPathInfo;
 import fr.insalyon.creatis.grida.server.business.DiskspaceManager;
 
 import org.apache.commons.io.FileUtils;
@@ -35,6 +36,23 @@ public class LocalOperations implements Operations {
             logger.error("Cannot get modification date of : " + path, e);
             throw new OperationException(e);
         }
+    }
+
+    @Override
+    public GridPathInfo getPathInfo(String proxy, String path) throws OperationException {
+        File file = new File(path);
+        boolean exist = file.exists();
+        GridData.Type type = null;
+        if (exist) {
+            if (file.isDirectory()) {
+                type = GridData.Type.Folder;
+            } else {
+                // file.isFile() may still be false here, for non-regular files such as device or socket.
+                // we still report "File" type anyway, as these special files do not matter to VIP.
+                type = GridData.Type.File;
+            }
+        }
+        return new GridPathInfo(exist, type);
     }
 
     @Override

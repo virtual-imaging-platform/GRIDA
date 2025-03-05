@@ -53,6 +53,7 @@ public class ExecutorConstants {
     public static final int COM_RENAME = 110;
     public static final int COM_EXIST = 111;
     public static final int COM_SET_COMMENT = 112;
+    public static final int COM_GET_PATH_INFO = 113;
     // Cache Commands
     public static final int CACHE_LIST_FILES = 201;
     public static final int CACHE_DELETE_FILE = 202;
