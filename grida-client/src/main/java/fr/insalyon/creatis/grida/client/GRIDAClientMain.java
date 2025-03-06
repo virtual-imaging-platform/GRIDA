@@ -55,7 +55,7 @@ public class GRIDAClientMain {
     final protected ClientOptions options;
     protected GRIDAClient client;
     protected GRIDAPoolClient poolClient;
-    GRIDAFeatures features;
+    final protected GRIDAFeatures features;
 
     public GRIDAClientMain(String[] args, GRIDAFeatures features) {
         this.features = features;

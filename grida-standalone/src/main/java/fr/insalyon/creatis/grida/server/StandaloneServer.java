@@ -34,6 +34,6 @@ public class StandaloneServer extends Server {
     @Override
     protected void initConfig(File confFile) {
         PropertyConfigurator.configure(Server.class.getClassLoader().getResource("gridastandaloneLog4j.properties"));
-        Configuration config = Configuration.getInstance(confFile, new GRIDAFeatures(false, false, false));
+        Configuration.getInstance(confFile, new GRIDAFeatures(false, false, false));
     }
 }
