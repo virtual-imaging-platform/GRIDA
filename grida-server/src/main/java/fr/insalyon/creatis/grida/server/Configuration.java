@@ -92,7 +92,11 @@ public class Configuration {
     private Configuration(File confFile, GRIDAFeatures features) {
         boolean isOneCommandConfigured = false;
 
-        this.features = features;
+        if (features == null) {
+            this.features = new GRIDAFeatures(true, true, true);
+        } else {
+            this.features = features;
+        }
         if (confFile == null) {
             loadConfigurationFile();
         } else {

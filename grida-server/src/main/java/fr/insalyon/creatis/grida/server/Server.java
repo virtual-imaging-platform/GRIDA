@@ -83,7 +83,7 @@ public class Server {
 
     protected void initConfig(File confFile) {
         PropertyConfigurator.configure(Server.class.getClassLoader().getResource("gridaLog4j.properties"));
-        Configuration.getInstance(confFile, new GRIDAFeatures(true, true, true));
+        Configuration.getInstance(confFile, null);
     }
 
     protected void initPools() throws DAOException {
