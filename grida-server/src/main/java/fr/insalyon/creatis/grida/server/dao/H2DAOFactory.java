@@ -58,7 +58,10 @@ public class H2DAOFactory extends DAOFactory {
     private Connection connection;
 
     public static H2DAOFactory getInstance() {
-        if (Configuration.getInstance().getFeatures().hasPool && instance == null) {
+        if (instance == null) {
+            if (!Configuration.getInstance().getFeatures().hasPool) {
+                throw new IllegalStateException("Can't create H2DAOFactory: pool is disabled");
+            }
             instance = new H2DAOFactory();
         }
         return instance;
