@@ -41,6 +41,7 @@ import fr.insalyon.creatis.grida.server.business.BusinessException;
 import fr.insalyon.creatis.grida.server.business.OperationBusiness;
 import fr.insalyon.creatis.grida.server.business.PoolBusiness;
 import fr.insalyon.creatis.grida.server.execution.Command;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -48,6 +49,7 @@ import fr.insalyon.creatis.grida.server.execution.Command;
  */
 public class UploadFileCommand extends Command {
 
+    private static final Logger logger = Logger.getLogger(UploadFileCommand.class);
     private String localFilePath;
     private String remoteDir;
     private OperationBusiness operationBusiness;
@@ -73,7 +75,7 @@ public class UploadFileCommand extends Command {
                     new PoolBusiness().addOperation(proxyFileName, destPath, "",
                             Operation.Type.Replicate, proxyFileName);
                 } catch (BusinessException ex) {
-                    // do nothing
+                    logger.warn("UploadFile: replication failed: " + ex);
                 }
             } else {
                 operationBusiness.replicateFile(destPath);
