@@ -310,65 +310,6 @@ public class GRIDAClient extends AbstractGRIDAClient {
     }
 
     /**
-     * Uploads a local file to a specific remote directory and a specific SE.
-     *
-     * @param localFile Local file path
-     * @param remoteDir Remote directory path where the file should be uploaded
-     * @param storageElement Storage Element host
-     * @return Remote path of the uploaded file
-     * @throws GRIDAClientException
-     */
-    public String uploadFileToSE(String localFile, String remoteDir,
-            String storageElement) throws GRIDAClientException {
-
-        List<String> storageElements = new ArrayList<String>();
-        storageElements.add(storageElement);
-
-        return uploadFileToSE(localFile, remoteDir, storageElements);
-    }
-
-    /**
-     * Uploads a local file to a specific remote directory and a list of SEs.
-     *
-     * @param localFile Local file path
-     * @param remoteDir Remote directory path where the file should be uploaded
-     * @param storageElementsList List of Storage Elements
-     * @return Remote path of the uploaded file
-     * @throws GRIDAClientException
-     */
-    public String uploadFileToSE(String localFile, String remoteDir,
-            List<String> storageElementsList) throws GRIDAClientException {
-
-        try {
-            Communication communication = getCommunication();
-
-            StringBuilder storageElements = new StringBuilder();
-            for (String se : storageElementsList) {
-                if (storageElements.length() > 0) {
-                    storageElements.append(Constants.MSG_SEP_2);
-                }
-                storageElements.append(se);
-            }
-
-            communication.sendMessage(
-                    ExecutorConstants.COM_UPLOAD_FILE_TO_SES + Constants.MSG_SEP_1
-                    + proxyPath + Constants.MSG_SEP_1
-                    + localFile + Constants.MSG_SEP_1
-                    + Util.getPath(remoteDir) + Constants.MSG_SEP_1
-                    + storageElements.toString());
-            communication.sendEndOfMessage();
-
-            String localFilePath = communication.getMessage();
-            communication.close();
-
-            return localFilePath.toString();
-
-        } catch (IOException ex) {
-            throw new GRIDAClientException(ex);
-        }
-    }
-
-    /**
      * Replicates a remote file to a list of preferred SEs declared in the agent.
      *
      * @param remoteFile Remote file name to be replicated

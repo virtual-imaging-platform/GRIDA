@@ -154,7 +154,6 @@ public class GRIDAClientMain {
             " getPathInfo <pathname>\n" +
             " getModDate <filename>\n" +
             " upload <localFile> <remoteDir>\n" +
-            " uploadToSes <localFile> <remoteDir> <storageElement>\n" +
             " replicate <remoteFile>\n" +
             " delete <path to file or dir>\n" +
             " createFolder <path>\n" +
@@ -232,10 +231,6 @@ public class GRIDAClientMain {
             break;
         case "upload":
             result = client.uploadFile(firstArg, options.cmdOptions[1]);
-            break;
-        case "uploadtoses":
-            result = client.uploadFileToSE(
-                firstArg, options.cmdOptions[1], options.cmdOptions[2]);
             break;
         case "replicate":
             client.replicateToPreferredSEs(firstArg);

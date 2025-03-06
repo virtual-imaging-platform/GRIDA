@@ -112,9 +112,6 @@ public class Executor extends Thread {
                 case ExecutorConstants.COM_UPLOAD_FILE:
                     return new UploadFileCommand(communication, proxy, tokens[2], tokens[3]);
 
-                case ExecutorConstants.COM_UPLOAD_FILE_TO_SES:
-                    return new UploadFileCommand(communication, proxy, tokens[2], tokens[3], tokens[4].split(Constants.MSG_SEP_2));
-
                 case ExecutorConstants.COM_REPLICATE_PREFERRED_SES:
                     return new ReplicatePreferredSEsCommand(communication, proxy, tokens[2]);
 

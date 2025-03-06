@@ -46,7 +46,6 @@ public class ExecutorConstants {
     public static final int COM_LIST_FILES_AND_FOLDERS = 103;
     public static final int COM_GET_MODIFICATION_DATE = 104;
     public static final int COM_UPLOAD_FILE = 105;
-    public static final int COM_UPLOAD_FILE_TO_SES = 106;
     public static final int COM_REPLICATE_PREFERRED_SES = 107;
     public static final int COM_DELETE = 108;
     public static final int COM_CREATE_FOLDER = 109;
