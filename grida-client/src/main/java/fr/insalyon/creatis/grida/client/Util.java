@@ -53,11 +53,14 @@ public class Util {
      * @return
      * @throws GRIDAClientException
      */
-    public static String removeLfnFromPath(String uri) throws GRIDAClientException {
-        
-        if (uri.contains("lfn:")) {
+    public static String getPath(String uri) throws GRIDAClientException {
+        if (uri.startsWith("lfn:") || uri.startsWith("file:")) {
             try {
-                return new URI(uri).getPath();
+                String path = new URI(uri).getPath();
+                if (path == null) {
+                    throw new GRIDAClientException("Can't get path from uri '" + uri + "'");
+                }
+                return path;
             } catch (URISyntaxException ex) {
                 throw new GRIDAClientException(ex.getMessage());
             }
@@ -73,11 +76,11 @@ public class Util {
      * @return
      * @throws GRIDAClientException 
      */
-    public static String[] removeLfnFromPath(String[] uris) throws GRIDAClientException {
+    public static String[] getPath(String[] uris) throws GRIDAClientException {
         
         List<String> res = new ArrayList<String>();
         for (String uri : uris) {
-            res.add(removeLfnFromPath(uri));
+            res.add(getPath(uri));
         }
         return res.toArray(new String[]{});
     }

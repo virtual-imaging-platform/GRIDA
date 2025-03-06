@@ -1,5 +1,6 @@
 package fr.insalyon.creatis.grida.client;
 
+import fr.insalyon.creatis.grida.common.GRIDAFeatures;
 import java.io.File;
 
 /*
@@ -12,12 +13,11 @@ public class StandaloneGridaClientMain extends GRIDAClientMain {
     }
 
     public StandaloneGridaClientMain(String[] args) {
-        super(args);
+        super(args, new GRIDAFeatures(false, false, false));
     }
 
     @Override
     protected void initClient() {
         this.client = new StandaloneGridaClient(options.proxy, new File(options.confFile));
-        this.poolClient = new StandaloneGridaPoolClient(options.proxy, new File(options.confFile));
     }
 }

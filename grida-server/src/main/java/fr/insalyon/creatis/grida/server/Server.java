@@ -35,6 +35,7 @@
 package fr.insalyon.creatis.grida.server;
 
 import fr.insalyon.creatis.grida.common.Communication;
+import fr.insalyon.creatis.grida.common.GRIDAFeatures;
 import fr.insalyon.creatis.grida.common.SocketCommunication;
 import fr.insalyon.creatis.grida.server.dao.DAOException;
 import fr.insalyon.creatis.grida.server.dao.DAOFactory;
@@ -82,7 +83,7 @@ public class Server {
 
     protected void initConfig(File confFile) {
         PropertyConfigurator.configure(Server.class.getClassLoader().getResource("gridaLog4j.properties"));
-        Configuration.getInstance(confFile);
+        Configuration.getInstance(confFile, null);
     }
 
     protected void initPools() throws DAOException {
