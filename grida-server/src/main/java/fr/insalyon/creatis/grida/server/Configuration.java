@@ -102,7 +102,7 @@ public class Configuration {
         } else {
             loadConfigurationFile(confFile);
         }
-        if (features.hasCache) {
+        if (this.features.hasCache) {
             createCachePath();
         }
         switch (commandsType) {
