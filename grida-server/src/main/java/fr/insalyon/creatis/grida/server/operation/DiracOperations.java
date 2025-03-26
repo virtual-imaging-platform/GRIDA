@@ -31,9 +31,10 @@
 package fr.insalyon.creatis.grida.server.operation;
 
 import fr.insalyon.creatis.grida.common.bean.GridData;
+import fr.insalyon.creatis.grida.common.bean.GridPathInfo;
 import fr.insalyon.creatis.grida.server.Configuration;
+import fr.insalyon.creatis.grida.server.business.DiskspaceManager;
 import fr.insalyon.creatis.grida.server.execution.PoolProcessManager;
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -85,6 +86,36 @@ public class DiracOperations implements Operations {
             logger.error(ex);
             throw new OperationException(ex);
         }
+    }
+
+    @Override
+    public GridPathInfo getPathInfo(String proxy, String path) throws OperationException {
+        logger.info("[dirac] Getting path info for: " + path);
+        // on non-existence, exit code is 0 and output is empty, as in exists(),
+        // because sed always succeed even when grep matches nothing
+        List<String> output = executeCommand(
+                proxy,
+                "Unable to get path info for " + path,
+                "dirac-dms-lfn-metadata " + path +
+                        " | grep -e \\'DirID\\' -e \\'FileID\\' | sed 's/^ *//'");
+        boolean exist;
+        GridData.Type type = null;
+        if (output.isEmpty()) {
+            exist = false;
+        } else {
+            exist = true;
+            String result = output.get(0);
+            if (result.startsWith("'DirID':")) {
+                type = GridData.Type.Folder;
+            } else if (result.startsWith("'FileID':")) {
+                type = GridData.Type.File;
+            } else {
+                String error = "[dirac] Cannot get path info for '" + path + "': unknown type";
+                logger.error(error);
+                throw new OperationException(error);
+            }
+        }
+        return new GridPathInfo(exist, type);
     }
 
     @Override
@@ -170,16 +201,16 @@ public class DiracOperations implements Operations {
 
             Long length = null;
             try {
-                length = new Long(tokens[INDEX_SIZE]);
+                length = Long.valueOf(tokens[INDEX_SIZE]);
             } catch (java.lang.NumberFormatException e) {
                 logger.warn(
                     "Cannot parse long: \"" + tokens[INDEX_SIZE] +
                     "\". Setting file length to 0");
-                length = new Long(0);
+                length = Long.valueOf(0);
             } catch (java.lang.ArrayIndexOutOfBoundsException e) {
                 logger.warn(
                     "Cannot get long. Setting file length to 0");
-                length = new Long(0);
+                length = Long.valueOf(0);
             }
 
             String comment = "";
@@ -229,7 +260,7 @@ public class DiracOperations implements Operations {
                 if (process.exitValue() != 0) {
                     logger.error(cout);
                     File file = new File(localDirPath + "/" + fileName);
-                    FileUtils.deleteQuietly(file);
+                    DiskspaceManager.deleteQuietly(file);
                     throw new OperationException(cout);
                 }
             }
@@ -289,7 +320,7 @@ public class DiracOperations implements Operations {
                     "Failed to perform upload from Dirac command.");
             }
 
-            FileUtils.deleteQuietly(new File(localFilePath));
+            DiskspaceManager.deleteQuietly(new File(localFilePath));
             return remoteFileName;
         } catch (InterruptedException | IOException ex) {
             logger.error(ex);

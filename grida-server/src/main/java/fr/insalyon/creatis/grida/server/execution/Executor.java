@@ -37,6 +37,7 @@ package fr.insalyon.creatis.grida.server.execution;
 import fr.insalyon.creatis.grida.common.Communication;
 import fr.insalyon.creatis.grida.common.Constants;
 import fr.insalyon.creatis.grida.common.ExecutorConstants;
+import fr.insalyon.creatis.grida.server.Configuration;
 import fr.insalyon.creatis.grida.server.execution.cache.AllCachedFilesCommand;
 import fr.insalyon.creatis.grida.server.execution.cache.DeleteCachedFileCommand;
 import fr.insalyon.creatis.grida.server.execution.command.*;
@@ -90,6 +91,7 @@ public class Executor extends Thread {
             String[] tokens = message.split(Constants.MSG_SEP_1);
             int command = Integer.parseInt(tokens[0]);
             String proxy = tokens[1];
+            Configuration config = Configuration.getInstance();
 
             switch (command) {
                 case ExecutorConstants.COM_GET_REMOTE_FILE:
@@ -101,14 +103,14 @@ public class Executor extends Thread {
                 case ExecutorConstants.COM_LIST_FILES_AND_FOLDERS:
                     return new ListFilesAndFoldersCommand(communication, proxy, tokens[2], tokens[3]);
 
+                case ExecutorConstants.COM_GET_PATH_INFO:
+                    return new GetPathInfoCommand(communication, proxy, tokens[2].split(Constants.MSG_SEP_2));
+
                 case ExecutorConstants.COM_GET_MODIFICATION_DATE:
                     return new GetModificationDateCommand(communication, proxy, tokens[2].split(Constants.MSG_SEP_2));
 
                 case ExecutorConstants.COM_UPLOAD_FILE:
                     return new UploadFileCommand(communication, proxy, tokens[2], tokens[3]);
-
-                case ExecutorConstants.COM_UPLOAD_FILE_TO_SES:
-                    return new UploadFileCommand(communication, proxy, tokens[2], tokens[3], tokens[4].split(Constants.MSG_SEP_2));
 
                 case ExecutorConstants.COM_REPLICATE_PREFERRED_SES:
                     return new ReplicatePreferredSEsCommand(communication, proxy, tokens[2]);
@@ -124,44 +126,88 @@ public class Executor extends Thread {
 
                 case ExecutorConstants.COM_EXIST:
                     return new ExistDataCommand(communication, proxy, tokens[2]);
-                    
+
                 case ExecutorConstants.COM_SET_COMMENT:
-                    return new SetCommentCommand(communication,proxy,tokens[2],tokens[3]);
+                    return new SetCommentCommand(communication, proxy, tokens[2], tokens[3]);
 
                 // Cache Operations
                 case ExecutorConstants.CACHE_LIST_FILES:
+                    if (!config.getFeatures().hasCache) {
+                        logException(new Exception("Command not supported: " + message));
+                        return null;
+                    }
                     return new AllCachedFilesCommand(communication, proxy);
 
                 case ExecutorConstants.CACHE_DELETE_FILE:
+                    if (!config.getFeatures().hasCache) {
+                        logException(new Exception("Command not supported: " + message));
+                        return null;
+                    }
                     return new DeleteCachedFileCommand(communication, proxy, tokens[2]);
 
                 // Pool Operations
                 case ExecutorConstants.POOL_ADD_OPERATION:
+                    if (!config.getFeatures().hasPool) {
+                        logException(new Exception("Command not supported: " + message));
+                        return null;
+                    }
                     return new PoolAddOperationCommand(communication, proxy, tokens[2], tokens[3], tokens[4], tokens[5]);
 
                 case ExecutorConstants.POOL_OPERATION_BY_ID:
+                    if (!config.getFeatures().hasPool) {
+                        logException(new Exception("Command not supported: " + message));
+                        return null;
+                    }
                     return new PoolOperationByIdCommand(communication, proxy, tokens[2]);
 
                 case ExecutorConstants.POOL_OPERATIONS_BY_USER:
+                    if (!config.getFeatures().hasPool) {
+                        logException(new Exception("Command not supported: " + message));
+                        return null;
+                    }
                     return new PoolOperationsByUserCommand(communication, proxy, tokens[2]);
 
                 case ExecutorConstants.POOL_REMOVE_OPERATION_BY_ID:
+                    if (!config.getFeatures().hasPool) {
+                        logException(new Exception("Command not supported: " + message));
+                        return null;
+                    }
                     return new PoolRemoveOperationByIdCommand(communication, proxy, tokens[2]);
 
                 case ExecutorConstants.POOL_REMOVE_OPERATIONS_BY_USER:
+                    if (!config.getFeatures().hasPool) {
+                        logException(new Exception("Command not supported: " + message));
+                        return null;
+                    }
                     return new PoolRemoveOperationsByUserCommand(communication, proxy, tokens[2]);
 
                 case ExecutorConstants.POOL_ALL_OPERATIONS:
+                    if (!config.getFeatures().hasPool) {
+                        logException(new Exception("Command not supported: " + message));
+                        return null;
+                    }
                     return new PoolAllOperationsCommand(communication, proxy);
 
                 case ExecutorConstants.POOL_LIMITED_OPERATIONS_BY_DATE:
+                    if (!config.getFeatures().hasPool) {
+                        logException(new Exception("Command not supported: " + message));
+                        return null;
+                    }
                     return new PoolLimitedOperationsByDateCommand(communication, proxy, tokens[2], tokens[3], tokens[4]);
 
                 // Zombie Operations
                 case ExecutorConstants.ZOM_GET:
+                    if (!config.getFeatures().hasZombie) {
+                        logException(new Exception("Command not supported: " + message));
+                        return null;
+                    }
                     return new ZombieGetListCommand(communication, proxy);
 
                 case ExecutorConstants.ZOM_DELETE:
+                    if (!config.getFeatures().hasZombie) {
+                        logException(new Exception("Command not supported: " + message));
+                        return null;
+                    }
                     return new DeleteZombieFileCommand(communication, proxy, tokens[2]);
 
                 default:

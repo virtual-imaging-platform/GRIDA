@@ -41,6 +41,7 @@ import fr.insalyon.creatis.grida.server.business.BusinessException;
 import fr.insalyon.creatis.grida.server.business.OperationBusiness;
 import fr.insalyon.creatis.grida.server.business.PoolBusiness;
 import fr.insalyon.creatis.grida.server.execution.Command;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -48,24 +49,17 @@ import fr.insalyon.creatis.grida.server.execution.Command;
  */
 public class UploadFileCommand extends Command {
 
+    private static final Logger logger = Logger.getLogger(UploadFileCommand.class);
     private String localFilePath;
     private String remoteDir;
-    private String[] storageElements;
     private OperationBusiness operationBusiness;
 
     public UploadFileCommand(Communication communication, String proxyFileName,
             String localFilePath, String remoteDir) {
 
-        this(communication, proxyFileName, localFilePath, remoteDir, new String[]{});
-    }
-
-    public UploadFileCommand(Communication communication, String proxyFileName,
-            String localFilePath, String remoteDir, String... storageElements) {
-
         super(communication, proxyFileName);
         this.localFilePath = localFilePath;
         this.remoteDir = remoteDir;
-        this.storageElements = storageElements;
 
         operationBusiness = new OperationBusiness(proxyFileName);
     }
@@ -76,23 +70,15 @@ public class UploadFileCommand extends Command {
         try {
             String destPath = operationBusiness.uploadFile(null, localFilePath, remoteDir);
 
-            if (storageElements.length > 0) {
-                StringBuilder sb = new StringBuilder();
-                for (String se : storageElements) {
-                    if (sb.length() > 0) {
-                        sb.append(",");
-                    }
-                    sb.append(se);
-                }
-                operationBusiness.replicateFile(destPath);
-                
-            } else {
+            if (Configuration.getInstance().getFeatures().hasPool) {
                 try {
                     new PoolBusiness().addOperation(proxyFileName, destPath, "",
                             Operation.Type.Replicate, proxyFileName);
                 } catch (BusinessException ex) {
-                    // do nothing
+                    logger.warn("UploadFile: replication failed: " + ex);
                 }
+            } else {
+                operationBusiness.replicateFile(destPath);
             }
             communication.sendMessage(destPath);
 

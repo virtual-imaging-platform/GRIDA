@@ -30,8 +30,10 @@
  */
 package fr.insalyon.creatis.grida.client;
 
+import fr.insalyon.creatis.grida.common.GRIDAFeatures;
 import fr.insalyon.creatis.grida.common.bean.CachedFile;
 import fr.insalyon.creatis.grida.common.bean.GridData;
+import fr.insalyon.creatis.grida.common.bean.GridPathInfo;
 import fr.insalyon.creatis.grida.common.bean.Operation;
 import fr.insalyon.creatis.grida.common.bean.ZombieFile;
 import java.io.File;
@@ -47,14 +49,16 @@ import org.apache.commons.cli.ParseException;
 
 public class GRIDAClientMain {
     public static void main(String[] args) {
-        new GRIDAClientMain(args).run();
+        new GRIDAClientMain(args, new GRIDAFeatures(true, true, true)).run();
     }
 
     final protected ClientOptions options;
     protected GRIDAClient client;
     protected GRIDAPoolClient poolClient;
+    final protected GRIDAFeatures features;
 
-    public GRIDAClientMain(String[] args) {
+    public GRIDAClientMain(String[] args, GRIDAFeatures features) {
+        this.features = features;
         options = handleArgs(args);
         initClient();
     }
@@ -147,27 +151,36 @@ public class GRIDAClientMain {
             " getFile <remoteFile> <localDir>\n" +
             " getFolder <remoteDir> <localDir> <1 to zip it, or else 0>\n" +
             " list <dir> <1 if refresh, or else 0>\n" +
+            " getPathInfo <pathname>\n" +
             " getModDate <filename>\n" +
             " upload <localFile> <remoteDir>\n" +
-            " uploadToSes <localFile> <remoteDir> <storageElement>\n" +
             " replicate <remoteFile>\n" +
             " delete <path to file or dir>\n" +
             " createFolder <path>\n" +
             " rename <oldPath> <newPath>\n" +
             " exists <remotePath>\n" +
             " setComment [lfn:]<path> <rev>\n" +
-            " listWithComment <dir> <1 if refresh, or else 0>\n" +
-            " cacheList\n" +
-            " cacheDelete <path>\n" +
-            " poolAdd <localFile> <remoteDir> <user>\n" +
-            " poolById <id>\n" +
-            " poolByUser <user>\n" +
-            " poolRemoveById <id>\n" +
-            " poolRemoveByUser <user>\n" +
-            " poolAll\n" +
-            " poolByDate <user> <limit> <startDate>\n" +
-            " zombieGet\n" +
-            " zombieDelete <surl>\n";
+            " listWithComment <dir> <1 if refresh, or else 0>\n";
+        if (features.hasCache) {
+            commands +=
+                " cacheList\n" +
+                " cacheDelete <path>\n";
+        }
+        if (features.hasPool) {
+            commands +=
+                " poolAdd <localFile> <remoteDir> <user>\n" +
+                " poolById <id>\n" +
+                " poolByUser <user>\n" +
+                " poolRemoveById <id>\n" +
+                " poolRemoveByUser <user>\n" +
+                " poolAll\n" +
+                " poolByDate <user> <limit> <startDate>\n";
+        }
+        if (features.hasZombie) {
+            commands +=
+                " zombieGet\n" +
+                " zombieDelete <surl>\n";
+        }
 
         new HelpFormatter().printHelp(
             "gridaClient [options] <command> <args>",
@@ -188,7 +201,14 @@ public class GRIDAClientMain {
             : options.cmdOptions[0];
 
         String result = "Done.";
-        switch (options.command.toLowerCase()) {
+        String command = options.command.toLowerCase();
+        if ((command.startsWith("cache") && !features.hasCache) ||
+                (command.startsWith("pool") && !features.hasPool) ||
+                (command.startsWith("zombie") && !features.hasZombie)) {
+            System.err.println("Unsupported command: " + options.command);
+            System.exit(1);
+        }
+        switch (command) {
         case "getfile":
             result = client.getRemoteFile(firstArg, options.cmdOptions[1]);
             break;
@@ -202,15 +222,15 @@ public class GRIDAClientMain {
             result = list(client, firstArg, refresh, false);
         }
         break;
+        case "getpathinfo":
+            GridPathInfo pathInfo = client.getPathInfo(firstArg);
+            result = pathInfo.exist() ? pathInfo.getType().name() : "Not found.";
+            break;
         case "getmoddate":
             result = Long.toString(client.getModificationDate(firstArg));
             break;
         case "upload":
             result = client.uploadFile(firstArg, options.cmdOptions[1]);
-            break;
-        case "uploadtoses":
-            result = client.uploadFileToSE(
-                firstArg, options.cmdOptions[1], options.cmdOptions[2]);
             break;
         case "replicate":
             client.replicateToPreferredSEs(firstArg);
@@ -352,9 +372,9 @@ public class GRIDAClientMain {
             "getfile",
             "getfolder",
             "list",
+            "getpathinfo",
             "getmoddate",
             "upload",
-            "uploadtoses",
             "replicate",
             "delete",
             "createfolder",
@@ -379,9 +399,9 @@ public class GRIDAClientMain {
             2, // "getfile",
             3, // "getfolder",
             2, // "list",
+            1, // "getpathinfo",
             1, // "getmoddate",
             2, // "upload",
-            3, // "uploadtoses",
             1, // "replicate",
             1, // "delete",
             1, // "createfolder",

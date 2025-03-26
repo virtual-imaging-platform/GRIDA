@@ -34,6 +34,7 @@
  */
 package fr.insalyon.creatis.grida.server.dao;
 
+import fr.insalyon.creatis.grida.server.Configuration;
 import fr.insalyon.creatis.grida.server.dao.h2.CacheFileData;
 import fr.insalyon.creatis.grida.server.dao.h2.CacheListData;
 import fr.insalyon.creatis.grida.server.dao.h2.PoolData;
@@ -53,11 +54,14 @@ public class H2DAOFactory extends DAOFactory {
     private static final Logger logger = Logger.getLogger(H2DAOFactory.class);
     private static H2DAOFactory instance;
     private final String DRIVER = "org.h2.Driver";
-    private final String DBURL = "jdbc:h2:db/vlet-agent.db";
+    private final String DBURL = "jdbc:h2:./db/vlet-agent.db";
     private Connection connection;
 
     public static H2DAOFactory getInstance() {
         if (instance == null) {
+            if (!Configuration.getInstance().getFeatures().hasPool) {
+                throw new IllegalStateException("Can't create H2DAOFactory: pool is disabled");
+            }
             instance = new H2DAOFactory();
         }
         return instance;

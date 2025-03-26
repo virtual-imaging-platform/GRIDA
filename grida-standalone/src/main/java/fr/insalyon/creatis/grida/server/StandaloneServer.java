@@ -1,5 +1,6 @@
 package fr.insalyon.creatis.grida.server;
 
+import fr.insalyon.creatis.grida.common.GRIDAFeatures;
 import fr.insalyon.creatis.grida.server.dao.DAOException;
 import fr.insalyon.creatis.grida.server.dao.DAOFactory;
 import fr.insalyon.creatis.grida.server.execution.*;
@@ -30,4 +31,9 @@ public class StandaloneServer extends Server {
         initDone = true;
     }
 
+    @Override
+    protected void initConfig(File confFile) {
+        PropertyConfigurator.configure(Server.class.getClassLoader().getResource("gridastandaloneLog4j.properties"));
+        Configuration.getInstance(confFile, new GRIDAFeatures(false, false, false));
+    }
 }

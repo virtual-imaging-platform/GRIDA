@@ -105,7 +105,7 @@ public class CacheBusiness {
 
                 } else {
                     cacheFileDAO.delete(remoteFilePath);
-                    FileUtils.deleteQuietly(new File(cacheName));
+                    DiskspaceManager.deleteQuietly(new File(cacheName));
                     logger.info("Updating file \"" + remoteFilePath + "\" in the cache.");
                 }
 
@@ -113,7 +113,7 @@ public class CacheBusiness {
                         - cacheFileDAO.getTotalUsedSpace() <= sourceSize) {
 
                     for (String name : cacheFileDAO.delete(sourceSize)) {
-                        FileUtils.deleteQuietly(new File(name));
+                        DiskspaceManager.deleteQuietly(new File(name));
                     }
                 }
                 FileUtils.copyFile(new File(sourcePath), new File(cacheName));
@@ -171,7 +171,7 @@ public class CacheBusiness {
     public void deleteCachedFile(String path) throws BusinessException {
 
         try {
-            FileUtils.deleteQuietly(new File(cacheFileDAO.getFile(path).getName()));
+            DiskspaceManager.deleteQuietly(new File(cacheFileDAO.getFile(path).getName()));
             cacheFileDAO.delete(path);
 
         } catch (DAOException ex) {

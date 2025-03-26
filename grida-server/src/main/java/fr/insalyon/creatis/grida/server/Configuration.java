@@ -34,6 +34,7 @@
  */
 package fr.insalyon.creatis.grida.server;
 
+import fr.insalyon.creatis.grida.common.GRIDAFeatures;
 import fr.insalyon.creatis.grida.server.operation.DiracOperations;
 import fr.insalyon.creatis.grida.server.operation.LocalOperations;
 import fr.insalyon.creatis.grida.server.operation.Operations;
@@ -71,30 +72,39 @@ public class Configuration {
     private int maxSimultaneousDeletes;
     private int maxSimultaneousReplications;
 
+    private GRIDAFeatures features;
+
     private String commandsType;
     private String diracBashrc;
     private Operations operations;
 
     public synchronized static Configuration getInstance() {
-        return getInstance(null);
+        return getInstance(null, null);
     }
 
-    public synchronized static Configuration getInstance(File confFile) {
+    public synchronized static Configuration getInstance(File confFile, GRIDAFeatures features) {
         if (instance == null) {
-            instance = new Configuration(confFile);
+            instance = new Configuration(confFile, features);
         }
         return instance;
     }
 
-    private Configuration(File confFile) {
+    private Configuration(File confFile, GRIDAFeatures features) {
         boolean isOneCommandConfigured = false;
 
+        if (features == null) {
+            this.features = new GRIDAFeatures(true, true, true);
+        } else {
+            this.features = features;
+        }
         if (confFile == null) {
             loadConfigurationFile();
         } else {
             loadConfigurationFile(confFile);
         }
-        createCachePath();
+        if (this.features.hasCache) {
+            createCachePath();
+        }
         switch (commandsType) {
         case "dirac":
         {
@@ -196,10 +206,8 @@ public class Configuration {
 
     private boolean isBinaryAvailable(String name, String envFile) {
         boolean isAvailable = false;
+
         try {
-            String command = envFile == null
-                ? "which"
-                : "source " + envFile + "; which";
 
             ProcessBuilder builder = envFile == null
                 ? new ProcessBuilder("which", name)
@@ -214,6 +222,10 @@ public class Configuration {
             logger.warn(ex);
         }
         return isAvailable;
+    }
+
+    public GRIDAFeatures getFeatures() {
+        return features;
     }
 
     public int getPort() {

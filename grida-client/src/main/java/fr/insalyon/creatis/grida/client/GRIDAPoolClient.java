@@ -81,7 +81,7 @@ public class GRIDAPoolClient extends AbstractGRIDAClient {
                     ExecutorConstants.POOL_ADD_OPERATION + Constants.MSG_SEP_1
                     + proxyPath + Constants.MSG_SEP_1
                     + localFile + Constants.MSG_SEP_1
-                    + Util.removeLfnFromPath(remoteDir) + Constants.MSG_SEP_1
+                    + Util.getPath(remoteDir) + Constants.MSG_SEP_1
                     + Operation.Type.Upload.name() + Constants.MSG_SEP_1
                     + user);
             communication.sendEndOfMessage();
@@ -112,7 +112,7 @@ public class GRIDAPoolClient extends AbstractGRIDAClient {
             communication.sendMessage(
                     ExecutorConstants.POOL_ADD_OPERATION + Constants.MSG_SEP_1
                     + proxyPath + Constants.MSG_SEP_1
-                    + Util.removeLfnFromPath(remoteFile) + Constants.MSG_SEP_1
+                    + Util.getPath(remoteFile) + Constants.MSG_SEP_1
                     + localDir + Constants.MSG_SEP_1
                     + Operation.Type.Download.name() + Constants.MSG_SEP_1
                     + user);
@@ -144,7 +144,7 @@ public class GRIDAPoolClient extends AbstractGRIDAClient {
             communication.sendMessage(
                     ExecutorConstants.POOL_ADD_OPERATION + Constants.MSG_SEP_1
                     + proxyPath + Constants.MSG_SEP_1
-                    + Util.parseArrayToString(Util.removeLfnFromPath(remoteFiles))
+                    + Util.parseArrayToString(Util.getPath(remoteFiles))
                     + Constants.MSG_SEP_1
                     + packName + Constants.MSG_SEP_1
                     + Operation.Type.Download_Files.name() + Constants.MSG_SEP_1
@@ -178,7 +178,7 @@ public class GRIDAPoolClient extends AbstractGRIDAClient {
             communication.sendMessage(
                     ExecutorConstants.POOL_ADD_OPERATION + Constants.MSG_SEP_1
                     + proxyPath + Constants.MSG_SEP_1
-                    + Util.removeLfnFromPath(remoteFolder) + Constants.MSG_SEP_1
+                    + Util.getPath(remoteFolder) + Constants.MSG_SEP_1
                     + localDir + Constants.MSG_SEP_1
                     + Operation.Type.Download.name() + Constants.MSG_SEP_1
                     + user);
@@ -210,7 +210,7 @@ public class GRIDAPoolClient extends AbstractGRIDAClient {
             communication.sendMessage(
                     ExecutorConstants.POOL_ADD_OPERATION + Constants.MSG_SEP_1
                     + proxyPath + Constants.MSG_SEP_1
-                    + Util.removeLfnFromPath(remoteFile) + Constants.MSG_SEP_1
+                    + Util.getPath(remoteFile) + Constants.MSG_SEP_1
                     + "" + Constants.MSG_SEP_1
                     + Operation.Type.Replicate.name() + Constants.MSG_SEP_1
                     + user);
@@ -240,7 +240,7 @@ public class GRIDAPoolClient extends AbstractGRIDAClient {
             communication.sendMessage(
                     ExecutorConstants.POOL_ADD_OPERATION + Constants.MSG_SEP_1
                     + proxyPath + Constants.MSG_SEP_1
-                    + Util.removeLfnFromPath(remotePath) + Constants.MSG_SEP_1
+                    + Util.getPath(remotePath) + Constants.MSG_SEP_1
                     + "" + Constants.MSG_SEP_1
                     + Operation.Type.Delete.name() + Constants.MSG_SEP_1
                     + user);
@@ -437,9 +437,9 @@ public class GRIDAPoolClient extends AbstractGRIDAClient {
 
         String[] operation = data.split(Constants.MSG_SEP_2);
         return new Operation(
-                operation[0], new Date(new Long(operation[1])), operation[2],
+                operation[0], new Date(Long.valueOf(operation[1])), operation[2],
                 operation[3], Type.valueOf(operation[4]),
                 Status.valueOf(operation[5]), operation[6],
-                new Double(operation[7]), new Integer(operation[8]));
+                Double.valueOf(operation[7]), Integer.valueOf(operation[8]));
     }
 }

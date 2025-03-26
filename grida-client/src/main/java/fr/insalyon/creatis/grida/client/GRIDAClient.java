@@ -38,8 +38,10 @@ import fr.insalyon.creatis.grida.common.Communication;
 import fr.insalyon.creatis.grida.common.Constants;
 import fr.insalyon.creatis.grida.common.ExecutorConstants;
 import fr.insalyon.creatis.grida.common.bean.GridData;
+import fr.insalyon.creatis.grida.common.bean.GridPathInfo;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -75,7 +77,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
             communication.sendMessage(
                     ExecutorConstants.COM_GET_REMOTE_FILE + Constants.MSG_SEP_1
                     + proxyPath + Constants.MSG_SEP_1
-                    + Util.removeLfnFromPath(remoteFile) + Constants.MSG_SEP_1
+                    + Util.getPath(remoteFile) + Constants.MSG_SEP_1
                     + localDir);
             communication.sendEndOfMessage();
 
@@ -110,7 +112,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
             communication.sendMessage(
                     ExecutorConstants.COM_GET_REMOTE_FOLDER + Constants.MSG_SEP_1
                     + proxyPath + Constants.MSG_SEP_1
-                    + Util.removeLfnFromPath(remoteDir) + Constants.MSG_SEP_1
+                    + Util.getPath(remoteDir) + Constants.MSG_SEP_1
                     + localDir + Constants.MSG_SEP_1 + zipResult.toString());
             communication.sendEndOfMessage();
 
@@ -139,7 +141,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
             communication.sendMessage(
                     ExecutorConstants.COM_LIST_FILES_AND_FOLDERS + Constants.MSG_SEP_1
                     + proxyPath + Constants.MSG_SEP_1
-                    + Util.removeLfnFromPath(dir) + Constants.MSG_SEP_1
+                    + Util.getPath(dir) + Constants.MSG_SEP_1
                     + refresh);
             communication.sendEndOfMessage();
 
@@ -156,9 +158,9 @@ public class GRIDAClient extends AbstractGRIDAClient {
 
                     } else {
                         if(d.length == 7)
-                            filesList.add(new GridData(d[0], GridData.Type.File, new Long(d[2]), d[3], d[4], d[5],d[6]));
+                            filesList.add(new GridData(d[0], GridData.Type.File, Long.valueOf(d[2]), d[3], d[4], d[5],d[6]));
                         else
-                            filesList.add(new GridData(d[0], GridData.Type.File, new Long(d[2]), d[3], d[4], d[5],""));
+                            filesList.add(new GridData(d[0], GridData.Type.File, Long.valueOf(d[2]), d[3], d[4], d[5],""));
                     }
                 }
             }
@@ -166,6 +168,59 @@ public class GRIDAClient extends AbstractGRIDAClient {
 
         } catch (ArrayIndexOutOfBoundsException ex) {
             throw new GRIDAClientException("Wrong number of parameters from server response.");
+        } catch (IOException ex) {
+            throw new GRIDAClientException(ex);
+        }
+    }
+
+    /**
+     * Gets path information for the provided path.
+     *
+     * @param pathName Path to resolve
+     * @return Whether the path exists, and is a folder or a file
+     * @throws GRIDAClientException
+     */
+    public GridPathInfo getPathInfo(String pathName) throws GRIDAClientException {
+        List<String> pathsList = Arrays.asList(pathName);
+        return getPathInfo(pathsList).get(0);
+    }
+
+    /**
+     * Gets path information for the list of paths provided.
+     *
+     * @param pathsList List of paths to resolve
+     * @return List of file or directory type respectively to the list of files
+     * @throws GRIDAClientException
+     */
+    public List<GridPathInfo> getPathInfo(List<String> pathsList) throws GRIDAClientException {
+        try {
+            Communication communication = getCommunication();
+
+            StringBuilder sb = new StringBuilder();
+            for (String fileName : pathsList) {
+                if (!sb.toString().isEmpty()) {
+                    sb.append(Constants.MSG_SEP_2);
+                }
+                sb.append(Util.getPath(fileName));
+            }
+            communication.sendMessage(
+                    ExecutorConstants.COM_GET_PATH_INFO + Constants.MSG_SEP_1
+                            + proxyPath + Constants.MSG_SEP_1 + sb.toString());
+            communication.sendEndOfMessage();
+
+            String response = communication.getMessage();
+            communication.close();
+
+            List<GridPathInfo> pathInfos = new ArrayList<>();
+            for (String data : response.split(Constants.MSG_SEP_1)) {
+                String[] d = data.split(Constants.MSG_SEP_2);
+                boolean exist = Boolean.valueOf(d[0]);
+                GridData.Type type = exist ? GridData.Type.valueOf(d[1]) : null;
+                pathInfos.add(new GridPathInfo(exist, type));
+            }
+
+            return pathInfos;
+
         } catch (IOException ex) {
             throw new GRIDAClientException(ex);
         }
@@ -203,7 +258,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
                 if (!sb.toString().isEmpty()) {
                     sb.append(Constants.MSG_SEP_2);
                 }
-                sb.append(Util.removeLfnFromPath(fileName));
+                sb.append(Util.getPath(fileName));
             }
             communication.sendMessage(
                     ExecutorConstants.COM_GET_MODIFICATION_DATE + Constants.MSG_SEP_1
@@ -215,7 +270,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
 
             List<Long> datesList = new ArrayList<Long>();
             for (String date : dates.split(Constants.MSG_SEP_1)) {
-                datesList.add(new Long(date));
+                datesList.add(Long.valueOf(date));
             }
 
             return datesList;
@@ -241,66 +296,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
                     ExecutorConstants.COM_UPLOAD_FILE + Constants.MSG_SEP_1
                     + proxyPath + Constants.MSG_SEP_1
                     + localFile + Constants.MSG_SEP_1
-                    + Util.removeLfnFromPath(remoteDir));
-            communication.sendEndOfMessage();
-
-            String localFilePath = communication.getMessage();
-            communication.close();
-
-            return localFilePath.toString();
-
-        } catch (IOException ex) {
-            throw new GRIDAClientException(ex);
-        }
-    }
-
-    /**
-     * Uploads a local file to a specific remote directory and a specific SE.
-     *
-     * @param localFile Local file path
-     * @param remoteDir Remote directory path where the file should be uploaded
-     * @param storageElement Storage Element host
-     * @return Remote path of the uploaded file
-     * @throws GRIDAClientException
-     */
-    public String uploadFileToSE(String localFile, String remoteDir,
-            String storageElement) throws GRIDAClientException {
-
-        List<String> storageElements = new ArrayList<String>();
-        storageElements.add(storageElement);
-
-        return uploadFileToSE(localFile, remoteDir, storageElements);
-    }
-
-    /**
-     * Uploads a local file to a specific remote directory and a list of SEs.
-     *
-     * @param localFile Local file path
-     * @param remoteDir Remote directory path where the file should be uploaded
-     * @param storageElementsList List of Storage Elements
-     * @return Remote path of the uploaded file
-     * @throws GRIDAClientException
-     */
-    public String uploadFileToSE(String localFile, String remoteDir,
-            List<String> storageElementsList) throws GRIDAClientException {
-
-        try {
-            Communication communication = getCommunication();
-
-            StringBuilder storageElements = new StringBuilder();
-            for (String se : storageElementsList) {
-                if (storageElements.length() > 0) {
-                    storageElements.append(Constants.MSG_SEP_2);
-                }
-                storageElements.append(se);
-            }
-
-            communication.sendMessage(
-                    ExecutorConstants.COM_UPLOAD_FILE_TO_SES + Constants.MSG_SEP_1
-                    + proxyPath + Constants.MSG_SEP_1
-                    + localFile + Constants.MSG_SEP_1
-                    + Util.removeLfnFromPath(remoteDir) + Constants.MSG_SEP_1
-                    + storageElements.toString());
+                    + Util.getPath(remoteDir));
             communication.sendEndOfMessage();
 
             String localFilePath = communication.getMessage();
@@ -326,7 +322,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
             communication.sendMessage(
                     ExecutorConstants.COM_REPLICATE_PREFERRED_SES + Constants.MSG_SEP_1
                     + proxyPath + Constants.MSG_SEP_1
-                    + Util.removeLfnFromPath(remoteFile));
+                    + Util.getPath(remoteFile));
             communication.sendEndOfMessage();
 
             communication.getMessage();
@@ -365,7 +361,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
                 if (files.length() > 0) {
                     files.append(Constants.MSG_SEP_2);
                 }
-                files.append(Util.removeLfnFromPath(file));
+                files.append(Util.getPath(file));
             }
             Communication communication = getCommunication();
             communication.sendMessage(
@@ -396,7 +392,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
             communication.sendMessage(
                     ExecutorConstants.COM_CREATE_FOLDER + Constants.MSG_SEP_1
                     + proxyPath + Constants.MSG_SEP_1
-                    + Util.removeLfnFromPath(path + "/" + folderName));
+                    + Util.getPath(path + "/" + folderName));
             communication.sendEndOfMessage();
 
             communication.getMessage();
@@ -421,7 +417,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
             communication.sendMessage(
                     ExecutorConstants.COM_RENAME + Constants.MSG_SEP_1
                     + proxyPath + Constants.MSG_SEP_1
-                    + Util.removeLfnFromPath(oldPath) + Constants.MSG_SEP_1
+                    + Util.getPath(oldPath) + Constants.MSG_SEP_1
                     + newPath);
             communication.sendEndOfMessage();
 
@@ -447,7 +443,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
             communication.sendMessage(
                     ExecutorConstants.COM_EXIST + Constants.MSG_SEP_1
                     + proxyPath + Constants.MSG_SEP_1
-                    + Util.removeLfnFromPath(remotePath));
+                    + Util.getPath(remotePath));
             communication.sendEndOfMessage();
 
             boolean exist = Boolean.valueOf(communication.getMessage());
@@ -466,7 +462,7 @@ public class GRIDAClient extends AbstractGRIDAClient {
             communication.sendMessage(
                     ExecutorConstants.COM_SET_COMMENT + Constants.MSG_SEP_1
                     + proxyPath + Constants.MSG_SEP_1
-                    + Util.removeLfnFromPath(lfn) + Constants.MSG_SEP_1
+                    + Util.getPath(lfn) + Constants.MSG_SEP_1
                     + rev);
             communication.sendEndOfMessage();
             communication.getMessage();

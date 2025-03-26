@@ -36,6 +36,7 @@ package fr.insalyon.creatis.grida.server.business;
 
 import fr.insalyon.creatis.devtools.zip.FolderZipper;
 import fr.insalyon.creatis.grida.common.bean.GridData;
+import fr.insalyon.creatis.grida.common.bean.GridPathInfo;
 import fr.insalyon.creatis.grida.server.Configuration;
 import fr.insalyon.creatis.grida.server.operation.Operations;
 import fr.insalyon.creatis.grida.server.operation.OperationException;
@@ -53,24 +54,25 @@ import org.apache.log4j.Logger;
  */
 public class OperationBusiness {
 
-    private static final Logger logger =
-        Logger.getLogger(OperationBusiness.class);
-    private Configuration configuration;
+    private static final Logger logger = Logger.getLogger(OperationBusiness.class);
     private String proxy;
     private Operations operations;
+    private DiskspaceManager diskManager;
 
-    public OperationBusiness(String proxy) {
+    public OperationBusiness(String proxy, DiskspaceManager manager, Operations operations) {
         this.proxy = proxy;
-        configuration = Configuration.getInstance();
-        operations = configuration.getOperations();
+        this.diskManager = manager;
+        this.operations = operations;
     }
 
-    /**
-     *
-     * @param path
-     * @return
-     * @throws BusinessException
-     */
+    public OperationBusiness(String proxy) {
+        this(proxy, new DiskspaceManager(), Configuration.getInstance().getOperations());
+    }
+
+    public void setDiskManager(DiskspaceManager manager) {
+        this.diskManager = manager;
+    }
+
     public long getModificationDate(String path) throws BusinessException {
 
         try {
@@ -80,12 +82,14 @@ public class OperationBusiness {
         }
     }
 
-    /**
-     *
-     * @param path
-     * @return
-     * @throws BusinessException
-     */
+    public GridPathInfo getPathInfo(String path) throws BusinessException {
+        try {
+            return operations.getPathInfo(proxy, path);
+        } catch (OperationException ex) {
+            throw new BusinessException(ex);
+        }
+    }
+
     public List<GridData> listFilesAndFolders(String path)
         throws BusinessException {
 
@@ -108,22 +112,12 @@ public class OperationBusiness {
      */
     public String downloadFile(String operationID, String localDirPath,
             String fileName, String remoteFilePath) throws BusinessException {
-
         try {
-            File localDir = new File(localDirPath);
-            localDir.mkdirs();
-
-            File destFile = new File(localDir.getAbsolutePath() + "/" + fileName);
-            long remoteModificationDate = getModificationDate(remoteFilePath);
-
-            if (destFile.exists() && remoteModificationDate <= destFile.lastModified()) {
-                logger.info("Avoiding download: file \"" + destFile.getAbsolutePath()
-                        + "\" is up to date.");
-                return destFile.getAbsolutePath();
-
+            if ( ! isDownloadPossible(localDirPath, fileName, remoteFilePath)) {
+                throw new BusinessException("Download impossible, there is not enough space on the disk!");
             } else {
-                return operations.downloadFile(
-                    operationID, proxy, localDirPath, fileName, remoteFilePath);
+                new File(localDirPath).mkdirs();
+                return operations.downloadFile(operationID, proxy, localDirPath, fileName, remoteFilePath);
             }
         } catch (OperationException ex) {
             throw new BusinessException(ex);
@@ -142,13 +136,13 @@ public class OperationBusiness {
     public String downloadFolder(String operationID, String localDirPath,
             String remoteDirPath, boolean zipResult) throws BusinessException {
 
+        transferPossible(remoteDirPath);
         try {
             File localDir = new File(localDirPath);
             localDir.mkdirs();
 
             List<String> errorFiles = new ArrayList<String>();
             if (exist(remoteDirPath)) {
-
                 for (GridData data : listFilesAndFolders(remoteDirPath)) {
                     try {
                         if (data.getType() == GridData.Type.Folder) {
@@ -241,9 +235,7 @@ public class OperationBusiness {
      * @return
      * @throws BusinessException
      */
-    public String uploadFile(String operationID, String localFilePath,
-            String remoteDir) throws BusinessException {
-
+    public String uploadFile(String operationID, String localFilePath, String remoteDir) throws BusinessException {
         try {
             return operations.uploadFile(
                 operationID, proxy, localFilePath, remoteDir);
@@ -259,7 +251,6 @@ public class OperationBusiness {
      * @throws BusinessException
      */
     public void replicateFile(String sourcePath) throws BusinessException {
-
         try {
             operations.replicateFile(proxy, sourcePath);
         } catch (OperationException ex) {
@@ -275,7 +266,6 @@ public class OperationBusiness {
      * @throws Exception
      */
     public void delete(String path) throws BusinessException {
-
         try {
             if (operations.isDir(proxy, path)) {
                 operations.deleteFolder(proxy, path);
@@ -294,7 +284,7 @@ public class OperationBusiness {
      * @throws BusinessException
      */
     public void createFolder(String newFolder) throws BusinessException {
-
+        transferPossible(null);
         try {
             operations.createFolder(proxy, newFolder);
         } catch (OperationException ex) {
@@ -302,14 +292,7 @@ public class OperationBusiness {
         }
     }
 
-    /**
-     *
-     * @param oldPath
-     * @param newPath
-     * @throws BusinessException
-     */
     public void rename(String oldPath, String newPath) throws BusinessException {
-
         try {
             operations.rename(proxy, oldPath, newPath);
         } catch (OperationException ex) {
@@ -317,14 +300,7 @@ public class OperationBusiness {
         }
     }
 
-    /**
-     *
-     * @param path
-     * @return
-     * @throws BusinessException
-     */
     public boolean exist(String path) throws BusinessException {
-
         try {
             logger.info("Verifying existence of '" + path + "'.");
             return operations.exists(proxy, path);
@@ -333,14 +309,7 @@ public class OperationBusiness {
         }
     }
 
-    /**
-     *
-     * @param path
-     * @return
-     * @throws BusinessException
-     */
     public boolean isFolder(String path) throws BusinessException {
-
         try {
             return operations.isDir(proxy, path);
         } catch (OperationException ex) {
@@ -356,11 +325,52 @@ public class OperationBusiness {
      * @throws BusinessException
      */
     public long getDataSize(String path) throws BusinessException {
-
         try {
             return operations.getDataSize(proxy, path);
         } catch (OperationException ex) {
             throw new BusinessException(ex);
+        }
+    }
+
+
+    public boolean isDownloadPossible(String localDirPath, String fileName, String remoteFilePath) throws BusinessException {
+        return isDownloadPossible(localDirPath, fileName, remoteFilePath, null);
+    }
+
+    public boolean isDownloadPossible(String localDirPath, String fileName, String remoteFilePath, Double size) throws BusinessException {
+        File localDir = new File(localDirPath);
+        File destFile = new File(localDir.getAbsolutePath() + "/" + fileName);
+        long remoteModificationDate = getModificationDate(remoteFilePath);
+
+        if (destFile.exists() && remoteModificationDate <= destFile.lastModified()) {
+            logger.info("Avoiding download: file \"" + destFile.getAbsolutePath()
+                    + "\" is up to date.");
+            return true;
+        } else if (size != null) {
+            return diskManager.isTransferable(size.longValue());
+        } else {
+            return isTransferPossible(remoteFilePath);
+        }
+    }
+
+    public boolean isTransferPossible(String pathFile) throws BusinessException {
+        long fileSize = pathFile != null ? getDataSize(pathFile) : 0;
+
+        return diskManager.isTransferable(fileSize);
+    }
+
+    /**
+     * This will check is there is enought of place on the grida server to transfer the file !
+     * @param pathFile (can be null if just want to check if there is enought of place, ex: folder creation)
+     * @throws BusinessException
+     */
+    public void transferPossible(String pathFile) throws BusinessException {
+        if ( ! isTransferPossible(pathFile)) {
+            if (pathFile == null) {
+                logger.warn("GRIDA Action authorized but the disk limit is reached !");
+            } else {
+                throw new BusinessException("Unable to download " + pathFile + "' due to disk space limits!");
+            }
         }
     }
 
