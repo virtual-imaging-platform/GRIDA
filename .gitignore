@@ -15,3 +15,4 @@ grida-server.conf
 .idea/
 *.iml
 *.iws
+*.log
