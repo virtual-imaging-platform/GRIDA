@@ -170,6 +170,7 @@ public class Configuration {
                 commandsType = config.getString(Constants.LAB_COMMANDS_TYPE, "dirac");
                 diracBashrc = config.getString(Constants.LAB_DIRAC_BASHRC, "needed_if_commands.type_is_dirac");
             } else {
+                logger.error("Invalid configuration file path: " + confFile.getPath());
                 throw new IllegalStateException("Configuration file must be present!");
             }
 
