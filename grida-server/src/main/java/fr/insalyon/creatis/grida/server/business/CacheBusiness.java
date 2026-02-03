@@ -46,7 +46,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -54,7 +55,7 @@ import org.apache.log4j.Logger;
  */
 public class CacheBusiness {
 
-    private static final Logger logger = Logger.getLogger(CacheBusiness.class);
+    private final Logger logger = LoggerFactory.getLogger(CacheBusiness.class);
     private Configuration configuration;
     private CacheFileDAO cacheFileDAO;
     private CacheListDAO cacheListDAO;
@@ -124,7 +125,7 @@ public class CacheBusiness {
                         + "\" to the cache. File is bigger than cache size.");
             }
         } catch (IOException ex) {
-            logger.error(ex);
+            logger.error("IOException occured", ex);
             throw new BusinessException(ex);
         } catch (DAOException ex) {
             throw new BusinessException(ex);

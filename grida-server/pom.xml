@@ -62,7 +62,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.4.196</version>
+            <version>${h2database.version}</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -84,12 +84,6 @@
             <artifactId>mockito-junit-jupiter</artifactId>
             <version>5.13.0</version>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
         </dependency>
     </dependencies>
 </project>

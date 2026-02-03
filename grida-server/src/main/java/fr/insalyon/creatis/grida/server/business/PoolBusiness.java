@@ -37,7 +37,6 @@ package fr.insalyon.creatis.grida.server.business;
 import fr.insalyon.creatis.grida.common.Constants;
 import fr.insalyon.creatis.grida.common.bean.Operation;
 import fr.insalyon.creatis.grida.common.bean.Operation.Type;
-import fr.insalyon.creatis.grida.server.Configuration;
 import fr.insalyon.creatis.grida.server.dao.DAOException;
 import fr.insalyon.creatis.grida.server.dao.DAOFactory;
 import fr.insalyon.creatis.grida.server.dao.PoolDAO;
@@ -45,9 +44,9 @@ import fr.insalyon.creatis.grida.server.execution.*;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -55,12 +54,10 @@ import org.apache.log4j.Logger;
  */
 public class PoolBusiness {
 
-    private static final Logger logger = Logger.getLogger(PoolBusiness.class);
+    private final Logger logger = LoggerFactory.getLogger(PoolBusiness.class);
     private PoolDAO poolDAO;
-    private DiskspaceManager diskManager;
 
     public PoolBusiness() {
-        diskManager = new DiskspaceManager();
         poolDAO = DAOFactory.getDAOFactory().getPoolDAO();
     }
 

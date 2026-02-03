@@ -42,7 +42,9 @@ import fr.insalyon.creatis.grida.server.dao.DAOException;
 import fr.insalyon.creatis.grida.server.dao.DAOFactory;
 import fr.insalyon.creatis.grida.server.dao.PoolDAO;
 import java.util.Calendar;
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -50,7 +52,7 @@ import org.apache.log4j.Logger;
  */
 public class PoolClean extends Thread {
 
-    private static final Logger logger = Logger.getLogger(PoolClean.class);
+    private final Logger logger = LoggerFactory.getLogger(PoolClean.class);
     private static PoolClean instance;
     private volatile boolean stop;
     private PoolDAO poolDAO;
@@ -85,7 +87,7 @@ public class PoolClean extends Thread {
                     try {
                         pollBusiness.removeOperationById(operation.getId());
                     } catch (BusinessException ex) {
-                        logger.error(ex);
+                        logger.error("Error occured", ex);
                     }
                 }
                 sleep(24*3600*1000);
@@ -93,7 +95,7 @@ public class PoolClean extends Thread {
             } catch (DAOException ex) {
                 // do nothing
             } catch (InterruptedException ex) {
-                logger.error(ex);
+                logger.error("Error occured", ex);
             }
         }
     }

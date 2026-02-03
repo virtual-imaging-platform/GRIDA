@@ -41,7 +41,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -49,7 +51,7 @@ import org.apache.log4j.Logger;
  */
 public class CacheFileData implements CacheFileDAO {
 
-    private final static Logger logger = Logger.getLogger(CacheFileData.class);
+    private final Logger logger = LoggerFactory.getLogger(CacheFileData.class);
     private static CacheFileData instance;
     private Connection connection;
 
@@ -80,7 +82,7 @@ public class CacheFileData implements CacheFileDAO {
             ps.execute();
 
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new DAOException(ex);
         }
     }
@@ -96,7 +98,7 @@ public class CacheFileData implements CacheFileDAO {
             ps.executeUpdate();
 
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new DAOException(ex);
         }
     }
@@ -111,7 +113,7 @@ public class CacheFileData implements CacheFileDAO {
             ps.execute();
 
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new DAOException(ex);
         }
     }
@@ -147,7 +149,7 @@ public class CacheFileData implements CacheFileDAO {
             return deletedEntries;
 
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new DAOException(ex);
         }
     }
@@ -168,7 +170,7 @@ public class CacheFileData implements CacheFileDAO {
                 return null;
             }
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new DAOException(ex);
         }
     }
@@ -186,7 +188,7 @@ public class CacheFileData implements CacheFileDAO {
                 return 0;
             }
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new DAOException(ex);
         }
     }
@@ -213,7 +215,7 @@ public class CacheFileData implements CacheFileDAO {
             return cacheFiles;
 
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new DAOException(ex);
         }
     }
@@ -237,7 +239,7 @@ public class CacheFileData implements CacheFileDAO {
                     new Date(rs.getTimestamp("last_usage").getTime()));
 
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new DAOException(ex);
         }
     }

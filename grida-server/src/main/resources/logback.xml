@@ -1,0 +1,20 @@
+<configuration debug="false" scan="true" scanPeriod="60 seconds" packagingData="true">
+    <!-- main log file-->
+    <appender name="GRIDA_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>grida.log</file>
+
+        <!-- since there is not unlimited rolling policy, this should be enough -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logFile.%d{yyyy}.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%d | %5p | %t | %c{1}:%L - %m%n %ex{2}</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="GRIDA_LOG" />
+    </root>
+</configuration>

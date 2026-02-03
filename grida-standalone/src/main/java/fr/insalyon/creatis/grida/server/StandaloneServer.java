@@ -2,16 +2,15 @@ package fr.insalyon.creatis.grida.server;
 
 import fr.insalyon.creatis.grida.common.GRIDAFeatures;
 import fr.insalyon.creatis.grida.server.dao.DAOException;
-import fr.insalyon.creatis.grida.server.dao.DAOFactory;
-import fr.insalyon.creatis.grida.server.execution.*;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 
 import java.io.File;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class StandaloneServer extends Server {
 
-    private static final Logger logger = Logger.getLogger(StandaloneServer.class);
+    private static final Logger logger = LoggerFactory.getLogger(StandaloneServer.class);
 
     private static boolean initDone = false;
 
@@ -33,7 +32,6 @@ public class StandaloneServer extends Server {
 
     @Override
     protected void initConfig(File confFile) {
-        PropertyConfigurator.configure(Server.class.getClassLoader().getResource("gridastandaloneLog4j.properties"));
         Configuration.getInstance(confFile, new GRIDAFeatures(false, false, false));
     }
 }

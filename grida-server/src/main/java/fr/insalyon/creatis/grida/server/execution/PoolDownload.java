@@ -47,7 +47,8 @@ import fr.insalyon.creatis.grida.server.dao.PoolDAO;
 import java.io.File;
 import java.util.List;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -55,7 +56,7 @@ import org.apache.log4j.Logger;
  */
 public class PoolDownload extends Thread {
 
-    private static final Logger logger = Logger.getLogger(PoolDownload.class);
+    private final Logger logger = LoggerFactory.getLogger(PoolDownload.class);
     private static PoolDownload instance;
     private PoolDAO poolDAO;
     private static volatile int running = 0;
@@ -147,7 +148,7 @@ public class PoolDownload extends Thread {
             } catch (DAOException ex) {
                 retry();
             } catch (BusinessException ex) {
-                logger.error(ex);
+                logger.error("Error occured", ex);
                 retry();
             } finally {
                 running--;
