@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
  */
 public class OperationBusiness {
 
-    private final Logger logger = LoggerFactory.getLogger(OperationBusiness.class);
+    private static final Logger logger = LoggerFactory.getLogger(OperationBusiness.class);
     private String proxy;
     private Operations operations;
     private DiskspaceManager diskManager;

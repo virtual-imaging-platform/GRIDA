@@ -53,10 +53,10 @@ import org.slf4j.LoggerFactory;
  */
 public class H2DAOFactory extends DAOFactory {
 
-    private final Logger logger = LoggerFactory.getLogger(H2DAOFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(H2DAOFactory.class);
     private static H2DAOFactory instance;
     private final String DRIVER = "org.h2.Driver";
-    private final String DBURL = "jdbc:h2:./db/grida.db";
+    private final String DBURL = "jdbc:h2:./db/grida";
     private Connection connection;
 
     public static H2DAOFactory getInstance() {

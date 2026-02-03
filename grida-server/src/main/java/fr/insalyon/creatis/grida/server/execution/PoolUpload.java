@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
  */
 public class PoolUpload extends Thread {
 
-    private final Logger logger = LoggerFactory.getLogger(PoolUpload.class);
+    private static final Logger logger = LoggerFactory.getLogger(PoolUpload.class);
     private static PoolUpload instance;
     private PoolDAO poolDAO;
     private static volatile int running = 0;

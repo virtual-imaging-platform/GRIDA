@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 public class LocalOperations implements Operations {
 
-    private final Logger logger = LoggerFactory.getLogger(LocalOperations.class);
+    private static final Logger logger = LoggerFactory.getLogger(LocalOperations.class);
 
     @Override
     public long getModificationDate(String proxy, String path) throws OperationException {

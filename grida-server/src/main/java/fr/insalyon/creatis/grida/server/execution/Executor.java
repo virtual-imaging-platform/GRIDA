@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Executor extends Thread {
 
-    private final Logger logger = LoggerFactory.getLogger(Executor.class);
+    private static final Logger logger = LoggerFactory.getLogger(Executor.class);
     private Communication communication;
 
     public Executor(Communication communication) {

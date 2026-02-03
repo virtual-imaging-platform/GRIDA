@@ -48,7 +48,7 @@ import static java.nio.file.Files.createTempDirectory;
 
 public class DiracOperations implements Operations {
 
-    private final Logger logger = LoggerFactory.getLogger(DiracOperations.class);
+    private static final Logger logger = LoggerFactory.getLogger(DiracOperations.class);
 
     private final String bashrcPath;
 

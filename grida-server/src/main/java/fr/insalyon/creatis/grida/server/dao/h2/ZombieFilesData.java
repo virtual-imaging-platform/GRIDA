@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ZombieFilesData implements ZombieFilesDAO {
 
-    private final Logger logger = LoggerFactory.getLogger(ZombieFilesData.class);
+    private static final Logger logger = LoggerFactory.getLogger(ZombieFilesData.class);
     private static ZombieFilesData instance;
     private Connection connection;
 

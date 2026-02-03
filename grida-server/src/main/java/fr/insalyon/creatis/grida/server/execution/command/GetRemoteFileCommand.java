@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
  */
 public class GetRemoteFileCommand extends Command {
 
-    private final Logger logger = LoggerFactory.getLogger(GetRemoteFileCommand.class);
+    private static final Logger logger = LoggerFactory.getLogger(GetRemoteFileCommand.class);
     private String remoteFilePath;
     private String localDirPath;
     private OperationBusiness operationBusiness;

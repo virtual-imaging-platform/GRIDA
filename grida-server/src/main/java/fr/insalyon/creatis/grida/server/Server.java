@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Server {
 
-    private final Logger logger = LoggerFactory.getLogger(Server.class);
+    private static final Logger logger = LoggerFactory.getLogger(Server.class);
 
     public static void main(String[] args) {
         new Server();

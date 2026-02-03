@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ListFilesAndFoldersCommand extends Command {
 
-    private final Logger logger = LoggerFactory.getLogger(ListFilesAndFoldersCommand.class);
+    private static final Logger logger = LoggerFactory.getLogger(ListFilesAndFoldersCommand.class);
     private String path;
     private boolean refresh;
     private OperationBusiness operationBusiness;

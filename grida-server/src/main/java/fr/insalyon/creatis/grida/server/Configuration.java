@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Configuration {
 
-    private final Logger logger = LoggerFactory.getLogger(Configuration.class);
+    private static final Logger logger = LoggerFactory.getLogger(Configuration.class);
     private static Configuration instance;
     private static final String confFile = "grida-server.conf";
     // General

@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
  */
 public class PoolData implements PoolDAO {
 
-    private final Logger logger = LoggerFactory.getLogger(PoolData.class);
+    private static final Logger logger = LoggerFactory.getLogger(PoolData.class);
     private static PoolData instance;
     private Connection connection;
 

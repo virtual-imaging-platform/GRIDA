@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
  */
 public class CacheFileData implements CacheFileDAO {
 
-    private final Logger logger = LoggerFactory.getLogger(CacheFileData.class);
+    private static final Logger logger = LoggerFactory.getLogger(CacheFileData.class);
     private static CacheFileData instance;
     private Connection connection;
 

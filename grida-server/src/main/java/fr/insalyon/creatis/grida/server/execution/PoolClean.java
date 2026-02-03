@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
  */
 public class PoolClean extends Thread {
 
-    private final Logger logger = LoggerFactory.getLogger(PoolClean.class);
+    private static final Logger logger = LoggerFactory.getLogger(PoolClean.class);
     private static PoolClean instance;
     private volatile boolean stop;
     private PoolDAO poolDAO;

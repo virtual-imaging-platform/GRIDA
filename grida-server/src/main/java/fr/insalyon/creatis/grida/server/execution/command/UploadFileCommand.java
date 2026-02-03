@@ -51,7 +51,7 @@ import fr.insalyon.creatis.grida.server.execution.Command;
  */
 public class UploadFileCommand extends Command {
 
-    private final Logger logger = LoggerFactory.getLogger(UploadFileCommand.class);
+    private static final Logger logger = LoggerFactory.getLogger(UploadFileCommand.class);
     private String localFilePath;
     private String remoteDir;
     private OperationBusiness operationBusiness;

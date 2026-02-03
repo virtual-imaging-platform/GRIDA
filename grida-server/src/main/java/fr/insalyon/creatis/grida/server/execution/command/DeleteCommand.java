@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DeleteCommand extends Command {
 
-    private final Logger logger = LoggerFactory.getLogger(DeleteCommand.class);
+    private static final Logger logger = LoggerFactory.getLogger(DeleteCommand.class);
     private String[] paths;
     private OperationBusiness operationBusiness;
 

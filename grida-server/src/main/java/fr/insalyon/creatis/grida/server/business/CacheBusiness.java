@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
  */
 public class CacheBusiness {
 
-    private final Logger logger = LoggerFactory.getLogger(CacheBusiness.class);
+    private static final Logger logger = LoggerFactory.getLogger(CacheBusiness.class);
     private Configuration configuration;
     private CacheFileDAO cacheFileDAO;
     private CacheListDAO cacheListDAO;

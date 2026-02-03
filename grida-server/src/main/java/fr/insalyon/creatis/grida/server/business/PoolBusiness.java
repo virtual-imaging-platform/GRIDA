@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
  */
 public class PoolBusiness {
 
-    private final Logger logger = LoggerFactory.getLogger(PoolBusiness.class);
+    private static final Logger logger = LoggerFactory.getLogger(PoolBusiness.class);
     private PoolDAO poolDAO;
 
     public PoolBusiness() {
