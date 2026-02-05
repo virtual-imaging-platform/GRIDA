@@ -86,10 +86,10 @@ public class H2DAOFactory extends DAOFactory {
                 connection.setAutoCommit(true);
 
             } catch (SQLException ex1) {
-                logException(ex);
+                logger.error("Error occured", ex);
             }
         } catch (ClassNotFoundException ex) {
-            logException(ex);
+            logger.error("Error occured", ex);
         }
     }
 
@@ -180,14 +180,5 @@ public class H2DAOFactory extends DAOFactory {
     @Override
     public ZombieFilesDAO getZombieFilesDAO() {
         return ZombieFilesData.getInstance(connection);
-    }
-
-    private void logException(Exception ex) {
-        logger.error("Error occured", ex);
-        if (logger.isDebugEnabled()) {
-            for (StackTraceElement stack : ex.getStackTrace()) {
-                logger.debug("", stack);
-            }
-        }
     }
 }
