@@ -77,12 +77,12 @@ public class Executor extends Thread {
                 logException(new Exception("Error during message receive: " + message));
             }
         } catch (IOException ex) {
-            logException(ex);
+            logger.error("Error occured", ex);
         } finally {
             try {
                 communication.close();
             } catch (IOException ex) {
-                logException(ex);
+                logger.error("Error occured", ex);
             }
         }
     }
@@ -225,10 +225,9 @@ public class Executor extends Thread {
     }
 
     private void logException(Exception ex) {
+        logger.error("Error occured", ex);
 
         communication.sendErrorMessage(ex.getMessage());
         communication.sendEndOfMessage();
-
-        logger.error("Error occured", ex);
     }
 }
