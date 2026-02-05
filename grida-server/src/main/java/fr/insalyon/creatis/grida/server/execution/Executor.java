@@ -74,15 +74,15 @@ public class Executor extends Thread {
                     command.execute();
                 }
             } else {
-                logger.error("Error occured", new Exception("Error during message receive: " + message));
+                logException(new Exception("Error during message receive: " + message));
             }
         } catch (IOException ex) {
-            logger.error("Error occured", ex);
+            logException(ex);
         } finally {
             try {
                 communication.close();
             } catch (IOException ex) {
-                logger.error("Error occured", ex);
+                logException(ex);
             }
         }
     }
@@ -135,14 +135,14 @@ public class Executor extends Thread {
                 // Cache Operations
                 case ExecutorConstants.CACHE_LIST_FILES:
                     if (!config.getFeatures().hasCache) {
-                        logger.error("Error occured", new Exception("Command not supported: " + message));
+                        logException(new Exception("Command not supported: " + message));
                         return null;
                     }
                     return new AllCachedFilesCommand(communication, proxy);
 
                 case ExecutorConstants.CACHE_DELETE_FILE:
                     if (!config.getFeatures().hasCache) {
-                        logger.error("Error occured", new Exception("Command not supported: " + message));
+                        logException(new Exception("Command not supported: " + message));
                         return null;
                     }
                     return new DeleteCachedFileCommand(communication, proxy, tokens[2]);
@@ -150,49 +150,49 @@ public class Executor extends Thread {
                 // Pool Operations
                 case ExecutorConstants.POOL_ADD_OPERATION:
                     if (!config.getFeatures().hasPool) {
-                        logger.error("Error occured", new Exception("Command not supported: " + message));
+                        logException(new Exception("Command not supported: " + message));
                         return null;
                     }
                     return new PoolAddOperationCommand(communication, proxy, tokens[2], tokens[3], tokens[4], tokens[5]);
 
                 case ExecutorConstants.POOL_OPERATION_BY_ID:
                     if (!config.getFeatures().hasPool) {
-                        logger.error("Error occured", new Exception("Command not supported: " + message));
+                        logException(new Exception("Command not supported: " + message));
                         return null;
                     }
                     return new PoolOperationByIdCommand(communication, proxy, tokens[2]);
 
                 case ExecutorConstants.POOL_OPERATIONS_BY_USER:
                     if (!config.getFeatures().hasPool) {
-                        logger.error("Error occured", new Exception("Command not supported: " + message));
+                        logException(new Exception("Command not supported: " + message));
                         return null;
                     }
                     return new PoolOperationsByUserCommand(communication, proxy, tokens[2]);
 
                 case ExecutorConstants.POOL_REMOVE_OPERATION_BY_ID:
                     if (!config.getFeatures().hasPool) {
-                        logger.error("Error occured", new Exception("Command not supported: " + message));
+                        logException(new Exception("Command not supported: " + message));
                         return null;
                     }
                     return new PoolRemoveOperationByIdCommand(communication, proxy, tokens[2]);
 
                 case ExecutorConstants.POOL_REMOVE_OPERATIONS_BY_USER:
                     if (!config.getFeatures().hasPool) {
-                        logger.error("Error occured", new Exception("Command not supported: " + message));
+                        logException(new Exception("Command not supported: " + message));
                         return null;
                     }
                     return new PoolRemoveOperationsByUserCommand(communication, proxy, tokens[2]);
 
                 case ExecutorConstants.POOL_ALL_OPERATIONS:
                     if (!config.getFeatures().hasPool) {
-                        logger.error("Error occured", new Exception("Command not supported: " + message));
+                        logException(new Exception("Command not supported: " + message));
                         return null;
                     }
                     return new PoolAllOperationsCommand(communication, proxy);
 
                 case ExecutorConstants.POOL_LIMITED_OPERATIONS_BY_DATE:
                     if (!config.getFeatures().hasPool) {
-                        logger.error("Error occured", new Exception("Command not supported: " + message));
+                        logException(new Exception("Command not supported: " + message));
                         return null;
                     }
                     return new PoolLimitedOperationsByDateCommand(communication, proxy, tokens[2], tokens[3], tokens[4]);
@@ -200,27 +200,35 @@ public class Executor extends Thread {
                 // Zombie Operations
                 case ExecutorConstants.ZOM_GET:
                     if (!config.getFeatures().hasZombie) {
-                        logger.error("Error occured", new Exception("Command not supported: " + message));
+                        logException(new Exception("Command not supported: " + message));
                         return null;
                     }
                     return new ZombieGetListCommand(communication, proxy);
 
                 case ExecutorConstants.ZOM_DELETE:
                     if (!config.getFeatures().hasZombie) {
-                        logger.error("Error occured", new Exception("Command not supported: " + message));
+                        logException(new Exception("Command not supported: " + message));
                         return null;
                     }
                     return new DeleteZombieFileCommand(communication, proxy, tokens[2]);
 
                 default:
-                    logger.error("Error occured", new Exception("Command not recognized: " + message));
+                    logException(new Exception("Command not recognized: " + message));
             }
 
         } catch (NumberFormatException ex) {
-            logger.error("Error occured", new Exception("Invalid command: " + ex.getMessage()));
+            logException(new Exception("Invalid command: " + ex.getMessage()));
         } catch (ArrayIndexOutOfBoundsException ex) {
-            logger.error("Error occured", new Exception("Wrong number of parameters."));
+            logException(new Exception("Wrong number of parameters."));
         }
         return null;
+    }
+
+    private void logException(Exception ex) {
+
+        communication.sendErrorMessage(ex.getMessage());
+        communication.sendEndOfMessage();
+
+        logger.error("Error occured", ex);
     }
 }
