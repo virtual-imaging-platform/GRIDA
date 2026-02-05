@@ -47,14 +47,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Rafael Ferreira da Silva
  */
 public class OperationBusiness {
 
-    private static final Logger logger = Logger.getLogger(OperationBusiness.class);
+    private static final Logger logger = LoggerFactory.getLogger(OperationBusiness.class);
     private String proxy;
     private Operations operations;
     private DiskspaceManager diskManager;
@@ -174,7 +175,7 @@ public class OperationBusiness {
                 throw new BusinessException(error);
             }
         } catch (IOException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new BusinessException(ex);
         }
     }
@@ -221,7 +222,7 @@ public class OperationBusiness {
             return zipName;
 
         } catch (IOException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new BusinessException(ex);
         }
     }

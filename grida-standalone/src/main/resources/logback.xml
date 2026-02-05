@@ -1,0 +1,12 @@
+<configuration debug="false" scan="true" scanPeriod="60 seconds" packagingData="true">
+    <!-- main log file-->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d | %5p | %t | %c{1}:%L - %m%n %ex</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>

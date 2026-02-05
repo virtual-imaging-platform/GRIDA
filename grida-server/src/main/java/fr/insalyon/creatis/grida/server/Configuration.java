@@ -44,7 +44,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -52,7 +53,7 @@ import org.apache.log4j.Logger;
  */
 public class Configuration {
 
-    private static final Logger logger = Logger.getLogger(Configuration.class);
+    private static final Logger logger = LoggerFactory.getLogger(Configuration.class);
     private static Configuration instance;
     private static final String confFile = "grida-server.conf";
     // General
@@ -175,7 +176,7 @@ public class Configuration {
             }
 
         } catch (ConfigurationException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
         }
     }
 
@@ -206,7 +207,7 @@ public class Configuration {
 
             isAvailable = process.exitValue() == 0;
         } catch (InterruptedException | IOException ex) {
-            logger.warn(ex);
+            logger.warn("Error occured", ex);
         }
         return isAvailable;
     }

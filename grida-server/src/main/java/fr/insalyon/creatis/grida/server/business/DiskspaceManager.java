@@ -3,14 +3,15 @@ package fr.insalyon.creatis.grida.server.business;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.insalyon.creatis.grida.server.Configuration;
 import fr.insalyon.creatis.grida.server.operation.LocalOperations;
 
 public class DiskspaceManager {
 
-    private final static Logger logger = Logger.getLogger(LocalOperations.class);
+    private static final Logger logger = LoggerFactory.getLogger(DiskspaceManager.class);
 
     public long getFreeSpace() {
         return new File(".").getFreeSpace();

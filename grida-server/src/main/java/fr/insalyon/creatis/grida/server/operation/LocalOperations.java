@@ -6,7 +6,8 @@ import fr.insalyon.creatis.grida.common.bean.GridPathInfo;
 import fr.insalyon.creatis.grida.server.business.DiskspaceManager;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 
 public class LocalOperations implements Operations {
 
-    private final static Logger logger = Logger.getLogger(LocalOperations.class);
+    private static final Logger logger = LoggerFactory.getLogger(LocalOperations.class);
 
     @Override
     public long getModificationDate(String proxy, String path) throws OperationException {

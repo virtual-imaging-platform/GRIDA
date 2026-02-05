@@ -35,18 +35,20 @@ import fr.insalyon.creatis.grida.common.bean.GridPathInfo;
 import fr.insalyon.creatis.grida.server.Configuration;
 import fr.insalyon.creatis.grida.server.business.DiskspaceManager;
 import fr.insalyon.creatis.grida.server.execution.PoolProcessManager;
-import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.nio.file.*;
 import java.text.*;
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static java.nio.file.Files.createTempDirectory;
 
 public class DiracOperations implements Operations {
 
-    private final static Logger logger = Logger.getLogger(DiracOperations.class);
+    private static final Logger logger = LoggerFactory.getLogger(DiracOperations.class);
 
     private final String bashrcPath;
 
@@ -83,7 +85,7 @@ public class DiracOperations implements Operations {
         try {
             return DiracOperations.parseMetadataDate(output.get(0));
         } catch (ParseException ex) {
-            logger.error(ex);
+            logger.error("Error while parsing", ex);
             throw new OperationException(ex);
         }
     }
@@ -157,7 +159,7 @@ public class DiracOperations implements Operations {
 
             return data;
         } catch (InterruptedException | IOException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new OperationException(ex);
         }
     }
@@ -268,7 +270,7 @@ public class DiracOperations implements Operations {
 
             return localDirPath + "/" + fileName;
         } catch (InterruptedException | IOException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new OperationException(ex);
         } finally {
             PoolProcessManager.getInstance().removeProcess(operationID);
@@ -323,7 +325,7 @@ public class DiracOperations implements Operations {
             DiskspaceManager.deleteQuietly(new File(localFilePath));
             return remoteFileName;
         } catch (InterruptedException | IOException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new OperationException(ex);
         } finally {
             PoolProcessManager.getInstance().removeProcess(operationID);
@@ -541,7 +543,7 @@ public class DiracOperations implements Operations {
             process = null;
             return cout;
         } catch (IOException | InterruptedException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new OperationException(ex);
         }
     }

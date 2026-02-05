@@ -34,6 +34,9 @@
  */
 package fr.insalyon.creatis.grida.server.execution.command;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fr.insalyon.creatis.grida.common.Communication;
 import fr.insalyon.creatis.grida.common.bean.Operation;
 import fr.insalyon.creatis.grida.server.Configuration;
@@ -41,7 +44,6 @@ import fr.insalyon.creatis.grida.server.business.BusinessException;
 import fr.insalyon.creatis.grida.server.business.OperationBusiness;
 import fr.insalyon.creatis.grida.server.business.PoolBusiness;
 import fr.insalyon.creatis.grida.server.execution.Command;
-import org.apache.log4j.Logger;
 
 /**
  *
@@ -49,7 +51,7 @@ import org.apache.log4j.Logger;
  */
 public class UploadFileCommand extends Command {
 
-    private static final Logger logger = Logger.getLogger(UploadFileCommand.class);
+    private static final Logger logger = LoggerFactory.getLogger(UploadFileCommand.class);
     private String localFilePath;
     private String remoteDir;
     private OperationBusiness operationBusiness;

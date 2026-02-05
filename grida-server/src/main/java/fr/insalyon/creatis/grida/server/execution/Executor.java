@@ -45,7 +45,9 @@ import fr.insalyon.creatis.grida.server.execution.pool.*;
 import fr.insalyon.creatis.grida.server.execution.zombie.DeleteZombieFileCommand;
 import fr.insalyon.creatis.grida.server.execution.zombie.ZombieGetListCommand;
 import java.io.IOException;
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -53,7 +55,7 @@ import org.apache.log4j.Logger;
  */
 public class Executor extends Thread {
 
-    private static final Logger logger = Logger.getLogger(Executor.class);
+    private static final Logger logger = LoggerFactory.getLogger(Executor.class);
     private Communication communication;
 
     public Executor(Communication communication) {
@@ -75,12 +77,12 @@ public class Executor extends Thread {
                 logException(new Exception("Error during message receive: " + message));
             }
         } catch (IOException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
         } finally {
             try {
                 communication.close();
             } catch (IOException ex) {
-                logger.error(ex);
+                logger.error("Error occured", ex);
             }
         }
     }
@@ -223,15 +225,9 @@ public class Executor extends Thread {
     }
 
     private void logException(Exception ex) {
+        logger.error("Error occured", ex);
 
         communication.sendErrorMessage(ex.getMessage());
         communication.sendEndOfMessage();
-
-        logger.error(ex.getMessage());
-        if (logger.isDebugEnabled()) {
-            for (StackTraceElement stack : ex.getStackTrace()) {
-                logger.debug(stack);
-            }
-        }
     }
 }
