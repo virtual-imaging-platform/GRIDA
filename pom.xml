@@ -39,7 +39,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <revision>3.3</revision>
+        <revision>3.3.1</revision>
         <changelist/>
         <sha1 />
         <h2database.version>2.4.240</h2database.version>
@@ -51,11 +51,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.5.0</version>
-                <configuration>
-                    <excludes>
-                        <exclude>**/logback.xml</exclude>
-                    </excludes>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -83,6 +78,52 @@
                 </executions>
             </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>3.8.0</version>
+                    <configuration>
+                        <inlineDescriptors>
+                            <!-- Copy/Paste standard jar-with-dependencies descriptor with new directory source
+                             "src/main/assembly-resources".
+                             This is used to include logback.xml that must NOT be present in a standard jar, but
+                             should be present in a jar-with-dependencies.
+                             Children pom.xml just have to configure the main class-->
+                            <inlineDescriptor>
+                                <id>jar-with-dependencies</id>
+                                <format>jar</format>
+                                <includeBaseDirectory>false</includeBaseDirectory>
+                                <dependencySets>
+                                    <dependencySet>
+                                        <outputDirectory>/</outputDirectory>
+                                        <useProjectArtifact>true</useProjectArtifact>
+                                        <unpack>true</unpack>
+                                        <scope>runtime</scope>
+                                    </dependencySet>
+                                </dependencySets>
+                                <fileSets>
+                                    <fileSet>
+                                        <directory>src/main/assembly-resources</directory>
+                                        <outputDirectory>/</outputDirectory>
+                                    </fileSet>
+                                </fileSets>
+                            </inlineDescriptor>
+                        </inlineDescriptors>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>make-assembly</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>single</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
     <repositories>
