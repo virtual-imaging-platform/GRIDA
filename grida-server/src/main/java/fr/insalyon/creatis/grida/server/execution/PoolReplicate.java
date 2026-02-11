@@ -44,7 +44,9 @@ import fr.insalyon.creatis.grida.server.dao.DAOFactory;
 import fr.insalyon.creatis.grida.server.dao.PoolDAO;
 import java.util.Date;
 import java.util.List;
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -52,7 +54,7 @@ import org.apache.log4j.Logger;
  */
 public class PoolReplicate extends Thread {
 
-    private static final Logger logger = Logger.getLogger(PoolReplicate.class);
+    private static final Logger logger = LoggerFactory.getLogger(PoolReplicate.class);
     private static PoolReplicate instance;
     private PoolDAO poolDAO;
     private static volatile int running = 0;
@@ -124,7 +126,7 @@ public class PoolReplicate extends Thread {
             } catch (DAOException ex) {
                 retry();
             } catch (BusinessException ex) {
-                logger.error(ex);
+                logger.error("Error occured", ex);
                 retry();
             } finally {
                 running--;

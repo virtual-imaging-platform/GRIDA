@@ -44,7 +44,9 @@ import fr.insalyon.creatis.grida.server.business.OperationBusiness;
 import fr.insalyon.creatis.grida.server.execution.Command;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -52,7 +54,7 @@ import org.apache.log4j.Logger;
  */
 public class ListFilesAndFoldersCommand extends Command {
 
-    private static final Logger logger = Logger.getLogger(ListFilesAndFoldersCommand.class);
+    private static final Logger logger = LoggerFactory.getLogger(ListFilesAndFoldersCommand.class);
     private String path;
     private boolean refresh;
     private OperationBusiness operationBusiness;

@@ -41,7 +41,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -49,7 +51,7 @@ import org.apache.log4j.Logger;
  */
 public class ZombieFilesData implements ZombieFilesDAO {
 
-    private static final Logger logger = Logger.getLogger(ZombieFilesData.class);
+    private static final Logger logger = LoggerFactory.getLogger(ZombieFilesData.class);
     private static ZombieFilesData instance;
     private Connection connection;
 
@@ -75,7 +77,7 @@ public class ZombieFilesData implements ZombieFilesDAO {
             ps.execute();
             
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new DAOException(ex);
         }
     }
@@ -100,7 +102,7 @@ public class ZombieFilesData implements ZombieFilesDAO {
             return list;
             
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new DAOException(ex);
         }
     }
@@ -115,7 +117,7 @@ public class ZombieFilesData implements ZombieFilesDAO {
             ps.execute();
 
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new DAOException(ex);
         }
     }

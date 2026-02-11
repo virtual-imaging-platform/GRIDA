@@ -43,7 +43,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -51,7 +53,7 @@ import org.apache.log4j.Logger;
  */
 public class PoolData implements PoolDAO {
 
-    private final static Logger logger = Logger.getLogger(PoolData.class);
+    private static final Logger logger = LoggerFactory.getLogger(PoolData.class);
     private static PoolData instance;
     private Connection connection;
 
@@ -88,7 +90,7 @@ public class PoolData implements PoolDAO {
             ps.close();
 
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new DAOException(ex);
         }
     }
@@ -109,7 +111,7 @@ public class PoolData implements PoolDAO {
             ps.close();
 
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new DAOException(ex);
         }
     }
@@ -125,7 +127,7 @@ public class PoolData implements PoolDAO {
             ps.close();
 
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new DAOException(ex);
         }
     }
@@ -149,7 +151,7 @@ public class PoolData implements PoolDAO {
             return operations;
 
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new DAOException(ex);
         }
     }
@@ -177,7 +179,7 @@ public class PoolData implements PoolDAO {
             return operations;
 
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new DAOException(ex);
         }
     }
@@ -204,7 +206,7 @@ public class PoolData implements PoolDAO {
             return operations;
 
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new DAOException(ex);
         }
     }
@@ -231,7 +233,7 @@ public class PoolData implements PoolDAO {
             return operations;
 
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new DAOException(ex);
         }
     }
@@ -258,7 +260,7 @@ public class PoolData implements PoolDAO {
             return operations;
 
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new DAOException(ex);
         }
     }
@@ -279,7 +281,7 @@ public class PoolData implements PoolDAO {
             return operation;
 
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new DAOException(ex);
         }
     }
@@ -299,7 +301,7 @@ public class PoolData implements PoolDAO {
             return operations;
 
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new DAOException(ex);
         }
     }
@@ -317,7 +319,7 @@ public class PoolData implements PoolDAO {
             ps.close();
 
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new DAOException(ex);
         }
     }
@@ -334,7 +336,7 @@ public class PoolData implements PoolDAO {
             ps.close();
 
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new DAOException(ex);
         }
     }
@@ -351,7 +353,7 @@ public class PoolData implements PoolDAO {
             ps.close();
 
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new DAOException(ex);
         }
     }
@@ -368,7 +370,7 @@ public class PoolData implements PoolDAO {
             ps.close();
 
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new DAOException(ex);
         }
     }
@@ -395,7 +397,7 @@ public class PoolData implements PoolDAO {
             return operations;
 
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new DAOException(ex);
         }
     }
@@ -411,7 +413,7 @@ public class PoolData implements PoolDAO {
             ps.close();
 
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new DAOException(ex);
         }
     }
@@ -461,7 +463,7 @@ public class PoolData implements PoolDAO {
             return operations;
 
         } catch (SQLException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             throw new DAOException(ex);
         }
     }

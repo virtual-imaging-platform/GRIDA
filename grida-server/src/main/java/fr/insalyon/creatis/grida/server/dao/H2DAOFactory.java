@@ -43,7 +43,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -51,10 +53,10 @@ import org.apache.log4j.Logger;
  */
 public class H2DAOFactory extends DAOFactory {
 
-    private static final Logger logger = Logger.getLogger(H2DAOFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(H2DAOFactory.class);
     private static H2DAOFactory instance;
     private final String DRIVER = "org.h2.Driver";
-    private final String DBURL = "jdbc:h2:./db/vlet-agent.db";
+    private final String DBURL = "jdbc:h2:./db/grida";
     private Connection connection;
 
     public static H2DAOFactory getInstance() {
@@ -84,10 +86,10 @@ public class H2DAOFactory extends DAOFactory {
                 connection.setAutoCommit(true);
 
             } catch (SQLException ex1) {
-                logException(ex);
+                logger.error("Error occured", ex);
             }
         } catch (ClassNotFoundException ex) {
-            logException(ex);
+            logger.error("Error occured", ex);
         }
     }
 
@@ -178,14 +180,5 @@ public class H2DAOFactory extends DAOFactory {
     @Override
     public ZombieFilesDAO getZombieFilesDAO() {
         return ZombieFilesData.getInstance(connection);
-    }
-
-    private void logException(Exception ex) {
-        logger.error(ex);
-        if (logger.isDebugEnabled()) {
-            for (StackTraceElement stack : ex.getStackTrace()) {
-                logger.debug(stack);
-            }
-        }
     }
 }

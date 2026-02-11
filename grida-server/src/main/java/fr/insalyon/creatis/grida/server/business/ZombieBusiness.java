@@ -39,7 +39,9 @@ import fr.insalyon.creatis.grida.server.dao.DAOException;
 import fr.insalyon.creatis.grida.server.dao.DAOFactory;
 import fr.insalyon.creatis.grida.server.dao.ZombieFilesDAO;
 import java.util.List;
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -47,7 +49,7 @@ import org.apache.log4j.Logger;
  */
 public class ZombieBusiness {
 
-    private static final Logger logger = Logger.getLogger(ZombieBusiness.class);
+    private static final Logger logger = LoggerFactory.getLogger(ZombieBusiness.class);
     private ZombieFilesDAO zombieFilesDAO;
 
     public ZombieBusiness() {

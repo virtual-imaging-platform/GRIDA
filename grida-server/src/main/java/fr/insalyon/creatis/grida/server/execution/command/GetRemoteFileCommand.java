@@ -44,7 +44,8 @@ import java.io.File;
 import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -52,7 +53,7 @@ import org.apache.log4j.Logger;
  */
 public class GetRemoteFileCommand extends Command {
 
-    private static final Logger logger = Logger.getLogger(GetRemoteFileCommand.class);
+    private static final Logger logger = LoggerFactory.getLogger(GetRemoteFileCommand.class);
     private String remoteFilePath;
     private String localDirPath;
     private OperationBusiness operationBusiness;
@@ -103,7 +104,7 @@ public class GetRemoteFileCommand extends Command {
                 cacheBusiness.updateFile(remoteFilePath);
             }
         } catch (IOException ex) {
-            logger.error(ex);
+            logger.error("Error occured", ex);
             communication.sendErrorMessage(ex.getMessage());
         } catch (BusinessException ex) {
             communication.sendErrorMessage(ex.getMessage());
